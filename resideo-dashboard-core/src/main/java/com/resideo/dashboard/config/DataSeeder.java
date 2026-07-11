@@ -68,13 +68,29 @@ public class DataSeeder implements CommandLineRunner {
         admin.setEnabled(true);
         admin = userRepository.save(admin);
 
-        ProjectMembership membership = new ProjectMembership();
-        membership.setProjectId(project.getId());
-        membership.setUserId(admin.getId());
-        membership.setRole(ProjectRole.PROJECT_ADMIN);
-        membershipRepository.save(membership);
+        ProjectMembership adminMembership = new ProjectMembership();
+        adminMembership.setProjectId(project.getId());
+        adminMembership.setUserId(admin.getId());
+        adminMembership.setRole(ProjectRole.PROJECT_ADMIN);
+        membershipRepository.save(adminMembership);
+
+        UserEntity swadhin = new UserEntity();
+        swadhin.setUsername("swadhin.acharya");
+        swadhin.setEmail("swadhin.acharya@resideo.com");
+        swadhin.setPasswordHash(passwordEncoder.encode("swadhin"));
+        swadhin.setDisplayName("Swadhin Acharya");
+        swadhin.setGlobalRole(GlobalRole.PLATFORM_ADMIN);
+        swadhin.setEnabled(true);
+        swadhin = userRepository.save(swadhin);
+
+        ProjectMembership swadhinMembership = new ProjectMembership();
+        swadhinMembership.setProjectId(project.getId());
+        swadhinMembership.setUserId(swadhin.getId());
+        swadhinMembership.setRole(ProjectRole.PROJECT_ADMIN);
+        membershipRepository.save(swadhinMembership);
 
         log.info("Default organization, project, and admin user created.");
         log.info("Admin credentials: admin / admin");
+        log.info("Swadhin credentials: swadhin.acharya / swadhin");
     }
 }
