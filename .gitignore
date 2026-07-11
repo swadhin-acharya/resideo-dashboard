@@ -1,0 +1,26 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+
+# Node
+node_modules/
+resideo-dashboard-ui/dist/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data
+data/
+executions/
+
+# Logs
+*.log
+/tmp/

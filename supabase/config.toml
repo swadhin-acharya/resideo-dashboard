@@ -1,0 +1,17 @@
+[project]
+ref = "ocxdpvtifyesevihusrs"
+name = "OpenReporter"
+
+[api]
+scheme = "https"
+host = "ocxdpvtifyesevihusrs.supabase.co"
+port = 443
+
+[db]
+major_version = 15
+
+[auth]
+enabled = false
+
+[analytics]
+enabled = false

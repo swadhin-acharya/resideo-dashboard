@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: ${JDBC_DATABASE_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:resideo_dashboard}?sslmode=require}
+    driver-class-name: org.postgresql.Driver
+    username: ${JDBC_DATABASE_USERNAME:${DB_USERNAME:resideo}}
+    password: ${JDBC_DATABASE_PASSWORD:${DB_PASSWORD:resideo}}
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  h2:
+    console:
+      enabled: false
+
+  flyway:
+    locations: classpath:db/migration
+
+resideo:
+  db-mode: POSTGRES
