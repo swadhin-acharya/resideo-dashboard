@@ -23,6 +23,9 @@ public class ApiToken {
     @Column(nullable = false)
     private String name;
 
+    @Column(length = 500)
+    private String purpose;
+
     @Column(name = "token_hash", nullable = false)
     private String tokenHash;
 
@@ -51,6 +54,8 @@ public class ApiToken {
     public void setProjectId(UUID projectId) { this.projectId = projectId; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public String getPurpose() { return purpose; }
+    public void setPurpose(String purpose) { this.purpose = purpose; }
     public String getTokenHash() { return tokenHash; }
     public void setTokenHash(String tokenHash) { this.tokenHash = tokenHash; }
     public String getTokenPrefix() { return tokenPrefix; }

@@ -8,6 +8,7 @@ import java.util.UUID;
 public class ApiTokenResponse {
     private UUID id;
     private String name;
+    private String purpose;
     private String tokenPrefix;
     private boolean enabled;
     private Instant lastUsedAt;
@@ -19,6 +20,7 @@ public class ApiTokenResponse {
         ApiTokenResponse r = new ApiTokenResponse();
         r.id = t.getId();
         r.name = t.getName();
+        r.purpose = t.getPurpose();
         r.tokenPrefix = t.getTokenPrefix();
         r.enabled = t.getEnabled();
         r.lastUsedAt = t.getLastUsedAt();
@@ -29,6 +31,7 @@ public class ApiTokenResponse {
 
     public UUID getId() { return id; }
     public String getName() { return name; }
+    public String getPurpose() { return purpose; }
     public String getTokenPrefix() { return tokenPrefix; }
     public boolean isEnabled() { return enabled; }
     public Instant getLastUsedAt() { return lastUsedAt; }

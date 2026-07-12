@@ -6,6 +6,7 @@ import com.resideo.dashboard.model.dto.ExecutionSummary;
 import com.resideo.dashboard.model.dto.PagedResponse;
 import com.resideo.dashboard.model.entity.*;
 import com.resideo.dashboard.model.enums.ExecutionStatus;
+import static com.resideo.dashboard.model.enums.ExecutionStatus.*;
 import com.resideo.dashboard.model.enums.Platform;
 import com.resideo.dashboard.model.enums.Visibility;
 import com.resideo.dashboard.repository.*;
@@ -71,8 +72,7 @@ public class ExecutionService {
         execution.setParallel(request.getParallel() != null ? request.getParallel() : false);
         execution.setRetryCount(request.getRetryCount() != null ? request.getRetryCount() : 0);
         execution.setJvmParams(request.getJvmParams());
-        execution.setStatus(ExecutionStatus.RUNNING);
-        execution.setStartTime(Instant.now());
+        execution.setStatus(ExecutionStatus.PENDING);
         if (projectId != null) {
             execution.setProjectId(projectId);
         }
@@ -86,12 +86,13 @@ public class ExecutionService {
         }
         execution.setMachineName(request.getMachineName());
         execution.setSource(request.getSource() != null ? request.getSource() : "DASHBOARD");
+        execution.setMavenCommand(buildMavenCommand(request));
 
         execution = executionRepository.save(execution);
         log.info("Created execution: {} (project={})", execution.getId(), execution.getProjectId());
 
         ExecutionResponse r = ExecutionResponse.from(execution);
-        r.setMavenCommand(buildMavenCommand(request));
+        r.setMavenCommand(execution.getMavenCommand());
         return r;
     }
 
@@ -283,6 +284,13 @@ public class ExecutionService {
     }
 
     @Transactional(readOnly = true)
+    public List<ExecutionResponse> getPendingAgentExecutions(UUID userId) {
+        return executionRepository.findByUserIdAndStatusOrderByCreatedAtDesc(userId, ExecutionStatus.PENDING).stream()
+                .map(ExecutionResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<ExecutionResponse> getRunningExecutions() {
         return getRunningExecutions(null);
     }
@@ -325,8 +333,10 @@ public class ExecutionService {
         executionRepository.findById(executionId).ifPresent(exec -> {
             exec.setTotalCount(exec.getTotalCount() + 1);
             if ("PASSED".equals(status)) exec.setPassCount(exec.getPassCount() + 1);
-            else if ("FAILED".equals(status)) exec.setFailCount(exec.getFailCount() + 1);
-            else if ("SKIPPED".equals(status)) exec.setSkipCount(exec.getSkipCount() + 1);
+            else if ("FAILED".equals(status)) {
+                exec.setFailCount(exec.getFailCount() + 1);
+                exec.setStatus(FAILED);
+            } else if ("SKIPPED".equals(status)) exec.setSkipCount(exec.getSkipCount() + 1);
             executionRepository.save(exec);
         });
 
@@ -339,6 +349,7 @@ public class ExecutionService {
                     feature.setDurationMs(feature.getDurationMs() != null
                             ? feature.getDurationMs() + durationMs : durationMs);
                 }
+                feature.setStatus(feature.getFailCount() > 0 ? "FAILED" : feature.getPassCount() > 0 ? "PASSED" : "RUNNING");
                 featureRepository.save(feature);
             });
         }
@@ -370,6 +381,16 @@ public class ExecutionService {
                         "timestamp", l.getTimestamp().toString()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    public ExecutionStep addStep(UUID scenarioId, String stepName, String status, Long durationMs, String logText) {
+        ExecutionStep step = new ExecutionStep();
+        step.setScenarioId(scenarioId);
+        step.setStepName(stepName);
+        step.setStatus(status);
+        step.setDurationMs(durationMs);
+        step.setLogText(logText);
+        return stepRepository.save(step);
     }
 
     public List<Map<String, Object>> getStepsByScenario(UUID scenarioId) {

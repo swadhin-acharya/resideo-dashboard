@@ -35,6 +35,8 @@ public interface ExecutionRepository extends JpaRepository<Execution, UUID> {
 
     List<Execution> findByUserIdOrderByCreatedAtDesc(UUID userId);
 
+    List<Execution> findByUserIdAndStatusOrderByCreatedAtDesc(UUID userId, ExecutionStatus status);
+
     Optional<Execution> findByIdAndProjectId(UUID id, UUID projectId);
 
     @Query("SELECT e FROM Execution e WHERE " +
@@ -55,7 +57,8 @@ public interface ExecutionRepository extends JpaRepository<Execution, UUID> {
                            @Param("visibilities") List<String> visibilities,
                            Pageable pageable);
 
-    @Query("SELECT e FROM Execution e WHERE e.reportPath IS NOT NULL " +
+    @Query("SELECT e FROM Execution e WHERE (e.reportPath IS NOT NULL " +
+           "OR e.status IN ('PASSED','FAILED','ABORTED','TIMEOUT')) " +
            "AND (:projectId IS NULL OR e.projectId = :projectId) " +
            "ORDER BY e.createdAt DESC")
     List<Execution> findWithReports(@Param("projectId") UUID projectId);

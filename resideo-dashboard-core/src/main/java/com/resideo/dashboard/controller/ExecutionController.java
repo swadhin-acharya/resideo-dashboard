@@ -55,6 +55,11 @@ public class ExecutionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/agent/pending")
+    public ResponseEntity<List<ExecutionResponse>> getPendingAgentExecutions(@CurrentUser UUID userId) {
+        return ResponseEntity.ok(executionService.getPendingAgentExecutions(userId));
+    }
+
     @GetMapping
     public ResponseEntity<PagedResponse<ExecutionResponse>> list(
             @RequestParam(defaultValue = "0") int page,
@@ -160,6 +165,23 @@ public class ExecutionController {
     @GetMapping("/{id}/scenarios/{scenarioId}/steps")
     public ResponseEntity<List<Map<String, Object>>> getScenarioSteps(@PathVariable UUID id, @PathVariable UUID scenarioId) {
         return ResponseEntity.ok(executionService.getStepsByScenario(scenarioId));
+    }
+
+    @PostMapping("/{id}/scenarios/{scenarioId}/steps")
+    public ResponseEntity<Map<String, Object>> addStep(@PathVariable UUID id, @PathVariable UUID scenarioId,
+                                                        @RequestBody Map<String, Object> body) {
+        String keyword = (String) body.getOrDefault("keyword", "");
+        String text = (String) body.getOrDefault("text", "");
+        String stepName = keyword.isEmpty() ? (String) body.get("stepName") : keyword + " " + text;
+        String status = (String) body.getOrDefault("status", "PASSED");
+        Long durationMs = body.get("durationMs") != null ? ((Number) body.get("durationMs")).longValue() : null;
+        String logText = (String) body.get("logText");
+        var step = executionService.addStep(scenarioId, stepName, status, durationMs, logText);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
+                "id", step.getId(),
+                "stepName", step.getStepName(),
+                "status", step.getStatus()
+        ));
     }
 
     @PostMapping("/{id}/scenarios")

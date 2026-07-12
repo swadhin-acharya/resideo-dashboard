@@ -98,6 +98,9 @@ public class Execution {
     @Column(name = "workspace_path", columnDefinition = "TEXT")
     private String workspacePath;
 
+    @Column(name = "maven_command", columnDefinition = "TEXT")
+    private String mavenCommand;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
 
@@ -181,6 +184,8 @@ public class Execution {
     public void setReportPath(String reportPath) { this.reportPath = reportPath; }
     public String getWorkspacePath() { return workspacePath; }
     public void setWorkspacePath(String workspacePath) { this.workspacePath = workspacePath; }
+    public String getMavenCommand() { return mavenCommand; }
+    public void setMavenCommand(String mavenCommand) { this.mavenCommand = mavenCommand; }
     public UUID getProjectId() { return projectId; }
     public void setProjectId(UUID projectId) { this.projectId = projectId; }
     public UUID getUserId() { return userId; }

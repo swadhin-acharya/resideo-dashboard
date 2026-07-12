@@ -73,6 +73,7 @@ public class ExecutionResponse {
         r.projectId = e.getProjectId();
         r.userId = e.getUserId();
         r.createdAt = e.getCreatedAt();
+        r.mavenCommand = e.getMavenCommand();
         return r;
     }
 

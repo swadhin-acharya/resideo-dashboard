@@ -13,8 +13,11 @@ import com.resideo.dashboard.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+@Order(0)
 
 @Component
 public class DataSeeder implements CommandLineRunner {

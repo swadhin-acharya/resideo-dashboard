@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Typography, Box, Card, CardContent, Chip, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow, Paper, Button, IconButton,
@@ -9,7 +9,8 @@ import DownloadIcon from '@mui/icons-material/Download';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EmailIcon from '@mui/icons-material/Email';
 import DescriptionIcon from '@mui/icons-material/Description';
-import { getReports, getReportUrl, getReportDownloadUrl, getLogDownloadUrl, emailReport, ReportItem } from '../api/reports';
+import { getReports, emailReport, ReportItem } from '../api/reports';
+import api from '../api/client';
 import StatusBadge from '../components/common/StatusBadge';
 
 function formatDuration(ms: number): string {
@@ -28,6 +29,25 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString() + ' ' + d.toLocaleTimeString();
 }
 
+async function openInTab(url: string) {
+  const resp = await api.get(url, { responseType: 'blob' });
+  const blob = resp.data;
+  const blobUrl = URL.createObjectURL(blob);
+  window.open(blobUrl, '_blank');
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+}
+
+async function downloadFile(url: string, filename: string) {
+  const resp = await api.get(url, { responseType: 'blob' });
+  const blob = resp.data;
+  const blobUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = blobUrl;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(blobUrl);
+}
+
 export default function ReportsPage() {
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,12 +56,12 @@ export default function ReportsPage() {
   const [sending, setSending] = useState(false);
   const [snack, setSnack] = useState<{ open: boolean; message: string; severity: 'success' | 'error' }>({ open: false, message: '', severity: 'success' });
 
-  const load = () => {
+  const load = useCallback(() => {
     setLoading(true);
     getReports().then(setReports).catch(() => setReports([])).finally(() => setLoading(false));
-  };
+  }, []);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const handleEmailSend = async () => {
     if (!emailTo.trim()) return;
@@ -104,9 +124,9 @@ export default function ReportsPage() {
                     </TableCell>
                     <TableCell sx={{ minWidth: 140 }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <LinearProgress variant="determinate" value={r.totalCount > 0 ? ((r.passCount + r.failCount) / r.totalCount) * 100 : 0} sx={{ flex: 1, height: 4, borderRadius: 2 }} />
+                        <LinearProgress variant="determinate" value={r.totalCount > 0 ? ((r.passCount + r.failCount + r.skipCount) / r.totalCount) * 100 : 0} sx={{ flex: 1, height: 4, borderRadius: 2 }} />
                         <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.65rem', whiteSpace: 'nowrap' }}>
-                          {r.passCount + r.failCount}/{r.totalCount}
+                          {r.passCount + r.failCount + r.skipCount}/{r.totalCount}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -115,17 +135,17 @@ export default function ReportsPage() {
                     <TableCell align="right">
                       <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end' }}>
                         <Tooltip title="View Report">
-                          <IconButton size="small" onClick={() => window.open(getReportUrl(r.id), '_blank')} sx={{ color: 'primary.main' }}>
+                          <IconButton size="small" onClick={() => openInTab(`/executions/${r.id}/report`)} sx={{ color: 'primary.main' }}>
                             <VisibilityIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Download Report">
-                          <IconButton size="small" onClick={() => window.open(getReportDownloadUrl(r.id), '_blank')} sx={{ color: 'success.main' }}>
+                          <IconButton size="small" onClick={() => downloadFile(`/executions/${r.id}/report/download`, `report_${r.id}.html`)} sx={{ color: 'success.main' }}>
                             <DownloadIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>
                         <Tooltip title="Download Logs">
-                          <IconButton size="small" onClick={() => window.open(getLogDownloadUrl(r.id), '_blank')} sx={{ color: 'text.secondary' }}>
+                          <IconButton size="small" onClick={() => downloadFile(`/executions/${r.id}/logs/download`, `execution_${r.id}.log`)} sx={{ color: 'text.secondary' }}>
                             <DescriptionIcon fontSize="small" />
                           </IconButton>
                         </Tooltip>

@@ -113,6 +113,14 @@ public class AuthService {
     }
 
     public ApiTokenResponse createToken(UUID userId, String name, UUID projectId) {
+        return createToken(userId, name, projectId, null, null);
+    }
+
+    public ApiTokenResponse createToken(UUID userId, String name, UUID projectId, Integer expiresInDays) {
+        return createToken(userId, name, projectId, expiresInDays, null);
+    }
+
+    public ApiTokenResponse createToken(UUID userId, String name, UUID projectId, Integer expiresInDays, String purpose) {
         String token = generateToken();
         String hash = sha256(token);
         String prefix = token.substring(0, 8);
@@ -121,14 +129,30 @@ public class AuthService {
         apiToken.setUserId(userId);
         apiToken.setProjectId(projectId);
         apiToken.setName(name);
+        apiToken.setPurpose(purpose);
         apiToken.setTokenHash(hash);
         apiToken.setTokenPrefix(prefix);
         apiToken.setEnabled(true);
+        if (expiresInDays != null && expiresInDays > 0) {
+            apiToken.setExpiresAt(Instant.now().plus(java.time.Duration.ofDays(expiresInDays)));
+        }
         apiToken = apiTokenRepository.save(apiToken);
 
         ApiTokenResponse resp = ApiTokenResponse.from(apiToken);
         resp.setFullToken(token);
         return resp;
+    }
+
+    public ApiTokenResponse updateToken(UUID tokenId, UUID userId, String newName, String newPurpose) {
+        ApiToken token = apiTokenRepository.findById(tokenId)
+                .orElseThrow(() -> new RuntimeException("Token not found"));
+        if (!token.getUserId().equals(userId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+        if (newName != null) token.setName(newName);
+        if (newPurpose != null) token.setPurpose(newPurpose);
+        token = apiTokenRepository.save(token);
+        return ApiTokenResponse.from(token);
     }
 
     public List<LoginResponse.ProjectInfo> getUserMemberships(UUID userId) {

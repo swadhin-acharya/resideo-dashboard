@@ -10,8 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.*;
-import java.nio.file.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
@@ -52,103 +54,9 @@ public class ExecutionRunnerService {
         liveHandler.broadcast(execId, "EXECUTION_CREATED", Map.of(
             "id", execId.toString(),
             "name", created.getName(),
-            "status", "RUNNING"
+            "status", "PENDING"
         ));
-
-        String mavenCmd = created.getMavenCommand();
-        executor.submit(() -> runMaven(execId, mavenCmd, request));
         return created;
-    }
-
-    private void runMaven(UUID execId, String mavenCmd, ExecutionRequest request) {
-        try {
-            liveHandler.broadcast(execId, "EXECUTION_LOG", Map.of("message", "Starting: " + mavenCmd));
-
-            Execution exec = executionRepository.findById(execId).orElse(null);
-            if (exec == null) return;
-
-            Path execDir = Paths.get(System.getProperty("user.dir"), "executions", execId.toString());
-            Files.createDirectories(execDir);
-            exec.setWorkspacePath(execDir.toString());
-
-            Path logFile = execDir.resolve("execution.log");
-            Path cucumberJson = execDir.resolve("target/cucumber.json");
-
-            ProcessBuilder pb = new ProcessBuilder();
-            if (System.getProperty("os.name").toLowerCase().contains("win")) {
-                pb.command("cmd.exe", "/c", mavenCmd);
-            } else {
-                pb.command("sh", "-c", mavenCmd);
-            }
-            pb.directory(execDir.toFile());
-            pb.redirectErrorStream(true);
-
-            Process process = pb.start();
-            runningProcesses.put(execId, process);
-
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                 BufferedWriter logWriter = Files.newBufferedWriter(logFile)) {
-
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    logWriter.write(line);
-                    logWriter.newLine();
-                    logWriter.flush();
-                    liveHandler.broadcast(execId, "EXECUTION_LOG", Map.of("message", line));
-                }
-            }
-
-            int exitCode = process.waitFor();
-            runningProcesses.remove(execId);
-
-            liveHandler.broadcast(execId, "EXECUTION_LOG", Map.of("message", "Maven exited with code: " + exitCode));
-
-            if (Files.exists(cucumberJson)) {
-                liveHandler.broadcast(execId, "EXECUTION_LOG", Map.of("message", "Parsing cucumber.json results..."));
-                reportParser.parse(execId, cucumberJson.toFile());
-
-                Path reportsDir = execDir.resolve("target");
-                if (Files.exists(reportsDir)) {
-                    try (var paths = Files.walk(reportsDir)) {
-                        paths.filter(p -> p.toString().endsWith(".html"))
-                             .findFirst()
-                             .ifPresent(p -> {
-                                 exec.setReportPath(p.toAbsolutePath().toString());
-                                 executionRepository.save(exec);
-                             });
-                    }
-                }
-
-                liveHandler.broadcast(execId, "EXECUTION_COMPLETED", Map.of(
-                    "id", execId.toString(),
-                    "status", exec.getStatus() != null ? exec.getStatus().name() : "PASSED"
-                ));
-            } else {
-                exec.setStatus(ExecutionStatus.FAILED);
-                exec.setEndTime(Instant.now());
-                if (exec.getStartTime() != null) {
-                    exec.setDurationMs(Duration.between(exec.getStartTime(), exec.getEndTime()).toMillis());
-                }
-                executionRepository.save(exec);
-                liveHandler.broadcast(execId, "EXECUTION_COMPLETED", Map.of(
-                    "id", execId.toString(),
-                    "status", "FAILED",
-                    "error", "cucumber.json not found"
-                ));
-            }
-
-        } catch (Exception e) {
-            log.error("Execution failed: " + execId, e);
-            liveHandler.broadcast(execId, "EXECUTION_ERROR", Map.of("error", e.getMessage()));
-
-            Execution exec = executionRepository.findById(execId).orElse(null);
-            if (exec != null) {
-                exec.setStatus(ExecutionStatus.FAILED);
-                exec.setEndTime(Instant.now());
-                exec.setDurationMs(Duration.between(exec.getStartTime(), Instant.now()).toMillis());
-                executionRepository.save(exec);
-            }
-        }
     }
 
     public List<Map<String, String>> listFeatureFiles(String workspacePath) {

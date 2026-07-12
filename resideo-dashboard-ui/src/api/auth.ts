@@ -104,8 +104,11 @@ export const removeProjectMember = (projectId: string, userId: string) =>
 export const getApiTokens = () =>
   api.get('/auth/tokens').then(r => r.data);
 
-export const createApiToken = (data: { name: string; projectId?: string }) =>
+export const createApiToken = (data: { name: string; purpose?: string; projectId?: string; expiresInDays?: number }) =>
   api.post('/auth/tokens', data).then(r => r.data);
+
+export const updateApiToken = (id: string, data: { name?: string; purpose?: string }) =>
+  api.patch(`/auth/tokens/${id}`, data).then(r => r.data);
 
 export const revokeApiToken = (id: string) =>
   api.delete(`/auth/tokens/${id}`);

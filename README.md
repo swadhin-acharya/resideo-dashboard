@@ -1,21 +1,51 @@
 # Resideo Automation Dashboard
 
-Real-time test execution dashboard for Cucumber automation frameworks. Streams live execution events, displays pass/fail metrics, and hosts historical reports.
+Real-time test execution dashboard for Cucumber automation frameworks. Streams live execution results, displays pass/fail metrics, hosts historical reports, and supports distributed execution agents.
+
+## Features
+
+- **Execution Management** — Create, view, and monitor test executions with real-time WebSocket updates
+- **Cucumber Report Parsing** — Automatically parse `cucumber.json` into features, scenarios, and steps
+- **Distributed Agents** — Agents poll the server, run `mvn test` locally, and push results back
+- **Project Scoping** — Multi-project support with project-specific API tokens
+- **Role-Based Access** — RBAC with platform admin, project admin, engineer, and viewer roles
+- **Report Center** — Generate and download HTML OpenReporter-style reports
+- **Analytics Dashboard** — Pass/fail trends, duration charts, platform breakdowns
+- **Supabase Integration** — Optional cloud storage for reports and artifacts
+- **WebSocket Live Updates** — Real-time execution progress streaming to the UI
 
 ## Architecture
 
 ```
-┌─────────────────┐       ┌───────────────────┐       ┌────────────┐
-│  Local Machine  │  ──►  │  Cloud Backend    │  ──►  │  Database  │
-│  (mvn test)     │  ws   │  (Render/Railway)  │       │ (Supabase) │
-│  Cucumber Plugin│       │  Spring Boot       │       │ PostgreSQL │
-└─────────────────┘       └────────┬──────────┘       └────────────┘
-                                   │
-                           ┌───────▼────────┐
-                           │  Frontend      │
-                           │  (Vercel)      │
-                           │  React + MUI   │
-                           └────────────────┘
+┌─────────────────────────┐       ┌───────────────────────┐
+│  Agent (Local Machine)  │       │  Agent (Local Machine)│
+│  • Polls for PENDING    │       │  • Polls for PENDING  │
+│  • Runs mvn test        │       │  • Runs mvn test      │
+│  • Pushes results via   │       │  • Pushes results via │
+│    REST API             │       │    REST API           │
+└──────────┬──────────────┘       └──────────┬────────────┘
+           │  HTTP POST (features,           │
+           │  scenarios, steps, logs)        │
+           ▼                                 ▼
+┌──────────────────────────────────────────────────────┐
+│                Cloud Backend (Spring Boot)            │
+│  • REST API — /api/v1/executions, /features, /auth   │
+│  • WebSocket — /ws (live execution events)           │
+│  • Auth — token-based (Bearer rd_...)                │
+│  • Reports — OpenReporter HTML generation            │
+└────────────────────┬─────────────────────────────────┘
+                     │
+          ┌──────────▼──────────┐
+          │  Database           │
+          │  (H2 / PostgreSQL)  │
+          └─────────────────────┘
+
+┌──────────────────────────────────────────────────────┐
+│              Frontend (React + MUI)                   │
+│  • Hosted on Vercel                                   │
+│  • Real-time dashboards, reports, analytics           │
+│  • Project management & API token creation            │
+└──────────────────────────────────────────────────────┘
 ```
 
 ## Quick Start (Local Development)
@@ -33,7 +63,8 @@ mvn package -DskipTests
 java -jar resideo-dashboard-standalone/target/*.jar --server.port=8080
 ```
 
-The H2 database file is created at `./data/resideo-dashboard`.
+The H2 database file is created at `./data/resideo-dashboard`.  
+Default credentials: `admin` / `admin` (created by `DataSampleSeeder`).
 
 ### Run Frontend (Dev Mode)
 
@@ -44,6 +75,21 @@ npm run dev
 ```
 
 Opens at `http://localhost:5173` with API proxy to `http://localhost:8080`.
+
+### Run Agent (Local)
+
+The agent is embedded in the Spring Boot JAR. Start a separate instance with agent mode enabled:
+
+```bash
+java -jar resideo-dashboard-standalone/target/*.jar \
+  --server.port=8081 \
+  --resideo.agent.enabled=true \
+  --resideo.agent.api-url=http://localhost:8080 \
+  --resideo.agent.api-token=rd_<your-api-token> \
+  --resideo.agent.workspace-path=/path/to/your/cucumber-project
+```
+
+The agent polls the server every 5s for `PENDING` executions, runs `mvn test`, and pushes cucumber results.
 
 ### Run Cucumber Plugin
 
@@ -56,69 +102,40 @@ mvn test \
 
 ---
 
-## Cloud Deployment
+## Projects & API Keys
 
-### 1. Database — Supabase PostgreSQL
+Each execution is scoped to a project. Create projects and API tokens from the dashboard UI (**Settings → Projects** and **Settings → API Tokens**) or via the API.
 
-1. Create a [Supabase](https://supabase.com) account and project.
-2. Go to **Project Settings → Database → Connection string**.
-3. Copy the PostgreSQL connection URI (format: `postgresql://user:password@host:6543/postgres`).
+### Creating a Project
 
-### 2. Backend — Render
+```bash
+curl -X POST https://resideo-dashboard.onrender.com/api/v1/projects \
+  -H "Authorization: Bearer <session-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"My Project","slug":"my-project","description":"..."}'
+```
 
-1. Fork/clone this repo to GitHub.
-2. On [Render](https://render.com), create a **New Web Service**.
-3. Connect your GitHub repository.
-4. Use these settings:
+Response includes the **project ID** (`id`) — save this for configuration.
 
-| Setting | Value |
-|---|---|
-| **Name** | `resideo-dashboard` |
-| **Runtime** | `Docker` |
-| **Build Command** | (leave blank — Dockerfile auto-detected) |
-| **Start Command** | (leave blank) |
-| **Instance Type** | Free |
+### Creating an API Token
 
-5. Add these **Environment Variables**:
+```bash
+curl -X POST https://resideo-dashboard.onrender.com/api/v1/auth/tokens \
+  -H "Authorization: Bearer <session-token>" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"ci-token","projectId":"<project-uuid>","expiresInDays":90}'
+```
 
-| Variable | Value |
-|---|---|
-| `PORT` | `8080` |
-| `JDBC_DATABASE_URL` | `jdbc:postgresql://host:6543/postgres?sslmode=require` |
-| `JDBC_DATABASE_USERNAME` | `postgres` (from Supabase) |
-| `JDBC_DATABASE_PASSWORD` | (from Supabase) |
-| `JDBC_DRIVER` | `org.postgresql.Driver` |
-| `DB_MODE` | `POSTGRES` |
-| `AUTH_ENABLED` | `true` |
-| `FRONTEND_URL` | `https://your-frontend.vercel.app` |
-| `SPRING_PROFILES_ACTIVE` | `postgres` |
-| `LOG_LEVEL` | `INFO` |
+Response includes `fullToken` (e.g., `rd_a1b2c3d4...`) — **save this value** (it is shown only once).
 
-6. Deploy. Your backend URL will be `https://resideo-dashboard.onrender.com`.
+### Configuring a Project for Test Runs
 
-### 3. Frontend — Vercel
-
-1. Push the repo to GitHub (the `resideo-dashboard-ui/` subdirectory will be detected).
-2. On [Vercel](https://vercel.com), import the repository.
-3. Set the **Root Directory** to `resideo-dashboard-ui`.
-4. Vercel auto-detects the `vercel.json` and Vite config.
-5. Add **Environment Variables**:
-
-| Variable | Value |
-|---|---|
-| `VITE_API_BASE_URL` | `https://resideo-dashboard.onrender.com/api/v1` |
-| `VITE_WS_URL` | `wss://resideo-dashboard.onrender.com/ws` |
-
-6. Deploy. Your frontend URL will be `https://resideo-dashboard.vercel.app`.
-
-### 4. Configure Local Framework to Use Cloud
-
-In `sample-denali-framework/src/test/resources/cucumber.properties`:
+In `cucumber.properties`:
 
 ```properties
 cucumber.plugin=pretty,com.resideo.dashboard.client.cucumber.DashboardCucumberPlugin
 resideo.dashboard.url=https://resideo-dashboard.onrender.com
-resideo.api.token=rd_<your-cloud-api-token>
+resideo.api.token=rd_<your-api-token>
 resideo.project.id=<your-project-uuid>
 ```
 
@@ -133,30 +150,131 @@ mvn test \
 
 ---
 
+## Agent Architecture
+
+The agent runs as a separate Spring Boot instance (or multiple instances) and bridges local Maven test execution to the cloud dashboard.
+
+### Lifecycle
+
+1. **User** creates an execution via the UI or API — status is set to `PENDING` with a `mavenCommand` field
+2. **Agent** polls `GET /api/v1/executions/agent/pending` (scoped to its API token's user)
+3. **Agent** picks up the execution, patches status to `RUNNING`, runs `mvn test` in the configured workspace
+4. **Agent** reads `target/cucumber.json`, parses features/scenarios/steps, and POSTs them to the server
+5. **Agent** patches execution status to `PASSED` or `FAILED`
+
+### Configuration
+
+| Property | Default | Description |
+|---|---|---|
+| `resideo.agent.enabled` | `false` | Enable agent mode |
+| `resideo.agent.api-url` | — | Server API base URL |
+| `resideo.agent.api-token` | — | API token for auth |
+| `resideo.agent.workspace-path` | — | Path to the Cucumber project |
+| `resideo.agent.poll-interval-ms` | `5000` | Poll interval for pending executions |
+
+---
+
+## Cloud Deployment
+
+### 1. Database — Supabase PostgreSQL
+
+1. Create a [Supabase](https://supabase.com) account and project.
+2. Go to **Project Settings → Database → Connection string**.
+3. Copy the PostgreSQL connection URI (`postgresql://user:password@host:6543/postgres`).
+
+### 2. Backend — Render
+
+1. Fork/clone this repo to GitHub.
+2. On [Render](https://render.com), create a **New Web Service** → connect your repo.
+3. Settings:
+
+| Setting | Value |
+|---|---|
+| **Name** | `resideo-dashboard` |
+| **Runtime** | `Docker` |
+| **Instance Type** | Free |
+
+4. Environment Variables:
+
+| Variable | Value |
+|---|---|
+| `PORT` | `8080` |
+| `JDBC_DATABASE_URL` | `jdbc:postgresql://host:6543/postgres?sslmode=require` |
+| `JDBC_DATABASE_USERNAME` | (from Supabase) |
+| `JDBC_DATABASE_PASSWORD` | (from Supabase) |
+| `JDBC_DRIVER` | `org.postgresql.Driver` |
+| `DB_MODE` | `POSTGRES` |
+| `AUTH_ENABLED` | `true` |
+| `FRONTEND_URL` | `https://resideo-dashboard-ui.vercel.app` |
+
+### 3. Frontend — Vercel
+
+The frontend is already deployed at **https://resideo-dashboard-ui.vercel.app**.
+
+To redeploy after changes:
+
+```bash
+cd resideo-dashboard-ui
+vercel --prod
+```
+
+The Vercel project uses environment variables from `vercel.json`:
+
+| Variable | Value |
+|---|---|
+| `VITE_API_BASE_URL` | `https://resideo-dashboard.onrender.com/api/v1` |
+| `VITE_WS_URL` | `wss://resideo-dashboard.onrender.com/ws` |
+
+### 4. API Endpoints Reference
+
+| Method | Path | Description |
+|---|---|---|
+| `POST` | `/api/v1/auth/login` | Login (username + password) |
+| `POST` | `/api/v1/auth/register` | Register new user |
+| `GET` | `/api/v1/auth/me` | Current user info |
+| `GET` | `/api/v1/auth/tokens` | List API tokens |
+| `POST` | `/api/v1/auth/tokens` | Create API token |
+| `DELETE` | `/api/v1/auth/tokens/{id}` | Revoke token |
+| `GET` | `/api/v1/projects` | List projects |
+| `POST` | `/api/v1/projects` | Create project |
+| `GET` | `/api/v1/projects/{id}` | Get project details |
+| `GET` | `/api/v1/executions` | List executions |
+| `POST` | `/api/v1/executions` | Create execution |
+| `GET` | `/api/v1/executions/{id}` | Execution details |
+| `GET` | `/api/v1/executions/agent/pending` | List pending executions (agent) |
+| `POST` | `/api/v1/executions/{id}/features` | Add feature to execution |
+| `POST` | `/api/v1/executions/{id}/scenarios` | Add scenario to execution |
+| `POST` | `/api/v1/executions/{id}/scenarios/{sid}/steps` | Add step to scenario |
+| `PATCH` | `/api/v1/executions/{id}/status` | Update execution status |
+| `POST` | `/api/v1/executions/{id}/logs` | Append execution log |
+
+---
+
 ## Environment Variables Reference
 
-### Backend (`application.yml`)
+### Backend
 
 | Variable | Default | Description |
 |---|---|---|
 | `PORT` | `8080` | Server port |
-| `JDBC_DATABASE_URL` | `jdbc:h2:file:./data/...` | Database JDBC URL (e.g. `jdbc:postgresql://postgres:Resideo%402026%40@db.ocxdpvtifyesevihusrs.supabase.co:5432/postgres?sslmode=require`) |
+| `JDBC_DATABASE_URL` | `jdbc:h2:file:./data/...` | Database connection URL |
 | `JDBC_DRIVER` | `org.h2.Driver` | JDBC driver class |
 | `JDBC_DATABASE_USERNAME` | `sa` | Database user |
 | `JDBC_DATABASE_PASSWORD` | *(empty)* | Database password |
-| `DB_MODE` | `FILE` | `FILE` for H2, `POSTGRES` for PostgreSQL |
+| `DB_MODE` | `FILE` | `FILE` (H2) or `POSTGRES` |
 | `AUTH_ENABLED` | `true` | Enable authentication |
 | `FRONTEND_URL` | `http://localhost:5173` | CORS allowed origin |
-| `CUCUMBER_JSON_PATH` | `target/cucumber.json` | Cucumber JSON report path |
+| `CUCUMBER_JSON_PATH` | `target/cucumber.json` | Cucumber report path |
 | `REPORT_PATH` | `target/open-reporter/report.html` | HTML report path |
 | `STORAGE_TYPE` | `local` | `local` or `supabase` |
-| `SUPABASE_URL` | *(empty)* | Supabase project URL (e.g. `https://ocxdpvtifyesevihusrs.supabase.co`) |
-| `SUPABASE_SERVICE_KEY` | *(empty)* | Supabase service role key (from Project Settings → API → `service_role` key) |
+| `SUPABASE_URL` | *(empty)* | Supabase project URL |
+| `SUPABASE_SERVICE_KEY` | *(empty)* | Supabase service role key |
 | `SUPABASE_BUCKET` | `reports` | Supabase storage bucket |
 | `LOG_LEVEL` | `INFO` | Logging level |
-| `SPRING_PROFILES_ACTIVE` | *(none)* | Set to `postgres` for PostgreSQL |
+| `resideo.agent.enabled` | `false` | Enable agent mode |
+| `resideo.seed-sample-data` | `false` | Seed sample data on startup |
 
-### Frontend (Vite)
+### Frontend
 
 | Variable | Default | Description |
 |---|---|---|
@@ -176,50 +294,37 @@ java -jar resideo-dashboard-standalone/target/*.jar
 # Frontend
 cd resideo-dashboard-ui && npm run dev
 
-# Plugin
+# Agent
+java -jar resideo-dashboard-standalone/target/*.jar \
+  --server.port=8081 --resideo.agent.enabled=true \
+  --resideo.agent.api-url=http://localhost:8080 \
+  --resideo.agent.api-token=rd_<token> \
+  --resideo.agent.workspace-path=./sample-framework
+
+# Plugin (if not using agent)
 mvn test -Dresideo.dashboard.url=http://localhost:8080
 ```
 
 ### Cloud Mode
 
 ```bash
-# Plugin only (pointing to deployed cloud)
+# Plugin only (results stream to cloud dashboard)
 mvn test \
   -Dresideo.dashboard.url=https://resideo-dashboard.onrender.com \
   -Dresideo.api.token=rd_<token> \
   -Dresideo.project.id=<project-uuid>
 ```
 
-The backend and frontend are already deployed — just run your tests locally and they stream to the cloud dashboard.
-
 ---
-
-## API Tokens
-
-Create tokens via the dashboard UI (Settings → API Tokens) or via curl:
-
-```bash
-# Login
-curl -X POST https://resideo-dashboard.onrender.com/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"username":"...","password":"..."}'
-
-# Create token
-curl -X POST https://resideo-dashboard.onrender.com/api/v1/auth/tokens \
-  -H "Authorization: Bearer <session-token>" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"ci-token"}'
-```
-
-Response includes `fullToken` — save this value (shown once only).
 
 ## First-Time Setup
 
-When you first deploy with a fresh database, the DataSeeder creates:
+When deployed with a fresh database, the `DataSeeder` creates:
 
 - Organization: **Resideo**
-- Project: **Default**
-- Admin user: `admin` / `admin123`
+- Project: **Default Project**
+- Admin user: `admin` / `admin` (if `resideo.seed-sample-data=true`)
+- Default users: `admin` / `admin`, `swadhin.acharya` / `swadhin`
 
 Register additional users via the UI or API.
 

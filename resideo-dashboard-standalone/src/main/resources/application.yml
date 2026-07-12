@@ -52,11 +52,18 @@ resideo:
   cucumber-json-path: ${CUCUMBER_JSON_PATH:target/cucumber.json}
   report-path: ${REPORT_PATH:target/open-reporter/report.html}
   frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  seed-sample-data: ${SEED_SAMPLE_DATA:false}
   storage:
     type: ${STORAGE_TYPE:local}
     supabase-url: ${SUPABASE_URL:}
     supabase-key: ${SUPABASE_SERVICE_KEY:}
     supabase-bucket: ${SUPABASE_BUCKET:reports}
+  agent:
+    enabled: ${AGENT_ENABLED:false}
+    api-url: ${AGENT_API_URL:http://localhost:8080}
+    api-token: ${AGENT_API_TOKEN:}
+    poll-interval-ms: ${AGENT_POLL_INTERVAL:5000}
+    workspace-path: ${AGENT_WORKSPACE:.}
 
 logging:
   level:

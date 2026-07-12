@@ -50,12 +50,28 @@ public class AuthController {
 
     @PostMapping("/tokens")
     public ResponseEntity<ApiTokenResponse> createToken(@CurrentUser UUID userId,
-                                                         @RequestBody Map<String, String> body) {
+                                                         @RequestBody Map<String, Object> body) {
         if (userId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        String name = body.getOrDefault("name", "API Token");
-        String projectIdStr = body.get("projectId");
+        String name = (String) body.getOrDefault("name", "API Token");
+        String purpose = (String) body.get("purpose");
+        String projectIdStr = (String) body.get("projectId");
         UUID projectId = projectIdStr != null ? UUID.fromString(projectIdStr) : null;
-        return ResponseEntity.ok(authService.createToken(userId, name, projectId));
+        Integer expiresInDays = body.get("expiresInDays") != null
+                ? ((Number) body.get("expiresInDays")).intValue() : null;
+        return ResponseEntity.ok(authService.createToken(userId, name, projectId, expiresInDays, purpose));
+    }
+
+    @PatchMapping("/tokens/{tokenId}")
+    public ResponseEntity<ApiTokenResponse> updateToken(@CurrentUser UUID userId,
+                                                        @PathVariable UUID tokenId,
+                                                        @RequestBody Map<String, String> body) {
+        if (userId == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        String newName = body.get("name");
+        String newPurpose = body.get("purpose");
+        if (newName == null && newPurpose == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok(authService.updateToken(tokenId, userId, newName, newPurpose));
     }
 
     @DeleteMapping("/tokens/{tokenId}")
