@@ -1,7 +1,10 @@
 package com.resideo.dashboard.service;
 
+import jakarta.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -10,6 +13,12 @@ import java.util.Map;
 public class NotificationService {
 
     private static final Logger log = LoggerFactory.getLogger(NotificationService.class);
+
+    private final JavaMailSender mailSender;
+
+    public NotificationService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void sendTeams(String webhookUrl, String title, String message, String color) {
         try {
@@ -35,9 +44,40 @@ public class NotificationService {
         }
     }
 
-    public void sendEmail(String smtpHost, int smtpPort, String from, String to, String subject, String body) {
-        log.info("Email notification would be sent to {}: {}", to, subject);
-        // Placeholder — use JavaMailSender in production
+    public void sendEmail(String from, String to, String subject, String htmlBody) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(htmlBody, true);
+            mailSender.send(message);
+            log.info("Email sent to {}: {}", to, subject);
+        } catch (Exception e) {
+            log.error("Failed to send email to {}: {}", to, subject, e);
+            throw new RuntimeException("Failed to send email: " + e.getMessage());
+        }
+    }
+
+    public void sendEmailWithAttachment(String from, String to, String subject, String htmlBody,
+                                         String attachmentName, byte[] attachmentData, String mimeType) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setFrom(from);
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(htmlBody, true);
+            if (attachmentData != null) {
+                helper.addAttachment(attachmentName, () -> new java.io.ByteArrayInputStream(attachmentData), mimeType);
+            }
+            mailSender.send(message);
+            log.info("Email with attachment sent to {}: {}", to, subject);
+        } catch (Exception e) {
+            log.error("Failed to send email with attachment to {}: {}", to, subject, e);
+            throw new RuntimeException("Failed to send email: " + e.getMessage());
+        }
     }
 
     private String escape(String s) {

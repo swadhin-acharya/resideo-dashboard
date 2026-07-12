@@ -55,6 +55,11 @@ public interface ExecutionRepository extends JpaRepository<Execution, UUID> {
                            @Param("visibilities") List<String> visibilities,
                            Pageable pageable);
 
+    @Query("SELECT e FROM Execution e WHERE e.reportPath IS NOT NULL " +
+           "AND (:projectId IS NULL OR e.projectId = :projectId) " +
+           "ORDER BY e.createdAt DESC")
+    List<Execution> findWithReports(@Param("projectId") UUID projectId);
+
     @Query("SELECT e FROM Execution e WHERE e.createdAt BETWEEN :from AND :to " +
            "AND (:projectId IS NULL OR e.projectId = :projectId) " +
            "ORDER BY e.createdAt ASC")

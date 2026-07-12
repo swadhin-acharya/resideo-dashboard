@@ -11,6 +11,7 @@ import SchedulesPage from './pages/SchedulesPage';
 import LoginPage from './pages/LoginPage';
 import UsersPage from './pages/UsersPage';
 import SettingsPage from './pages/SettingsPage';
+import ReportsPage from './pages/ReportsPage';
 import PlaceholderPage from './pages/placeholders/PlaceholderPage';
 import PrivateRoute from './components/auth/PrivateRoute';
 
@@ -26,7 +27,7 @@ export default function App() {
           <Route path="/executions/new" element={<NewExecutionPage />} />
           <Route path="/executions/:id" element={<ExecutionDetailPage />} />
           <Route path="/live" element={<PlaceholderPage />} />
-          <Route path="/reports" element={<PlaceholderPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/flaky-tests" element={<PlaceholderPage />} />
           <Route path="/test-explorer" element={<PlaceholderPage />} />

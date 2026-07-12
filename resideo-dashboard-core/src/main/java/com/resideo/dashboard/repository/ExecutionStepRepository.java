@@ -12,5 +12,7 @@ public interface ExecutionStepRepository extends JpaRepository<ExecutionStep, Lo
 
     List<ExecutionStep> findByScenarioId(UUID scenarioId);
 
+    List<ExecutionStep> findByScenarioIdOrderById(UUID scenarioId);
+
     void deleteByScenarioId(UUID scenarioId);
 }

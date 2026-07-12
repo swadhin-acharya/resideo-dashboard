@@ -213,6 +213,12 @@ public class ExecutionService {
         return response;
     }
 
+    @Transactional(readOnly = true)
+    public List<ExecutionResponse> listWithReports(UUID projectId) {
+        List<Execution> execs = executionRepository.findWithReports(projectId);
+        return execs.stream().map(ExecutionResponse::from).collect(Collectors.toList());
+    }
+
     public ExecutionResponse updateName(UUID id, String name) {
         Execution execution = executionRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Execution not found: " + id));
