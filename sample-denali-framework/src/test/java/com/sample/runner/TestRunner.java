@@ -11,7 +11,7 @@ import static io.cucumber.junit.platform.engine.Constants.*;
 @IncludeEngines("cucumber")
 @SelectClasspathResource("features")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.sample")
-@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty,com.resideo.dashboard.client.cucumber.DashboardCucumberPlugin")
+@ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty,com.openqa.dashboard.client.cucumber.DashboardCucumberPlugin")
 @ConfigurationParameter(key = "cucumber.publish.quiet", value = "true")
 public class TestRunner {
 }

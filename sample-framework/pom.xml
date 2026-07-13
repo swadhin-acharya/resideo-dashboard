@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.resideo</groupId>
+    <groupId>com.openqa</groupId>
     <artifactId>resideo-sample-framework</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
@@ -65,8 +65,8 @@
 
         <!-- Resideo Dashboard Core (optional — for live streaming) -->
         <dependency>
-            <groupId>com.resideo</groupId>
-            <artifactId>resideo-dashboard-core</artifactId>
+            <groupId>com.openqa</groupId>
+            <artifactId>openqa-dashboard-core</artifactId>
             <version>${dashboard.version}</version>
             <scope>test</scope>
         </dependency>
@@ -98,7 +98,7 @@
                         <include>**/TestRunner.java</include>
                     </includes>
                     <systemPropertyVariables>
-                        <resideo.execution.id>${execution.id}</resideo.execution.id>
+                        <openqa.execution.id>${execution.id}</openqa.execution.id>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

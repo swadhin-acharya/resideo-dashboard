@@ -67,9 +67,9 @@ fi
 
 echo "Starting dashboard..."
 $JAVA_CMD -jar "${DASHBOARD_JAR}" \
-    --resideo.workspace="${SCRIPT_DIR}" \
-    --resideo.cucumber-json-path="target/cucumber.json" \
-    --resideo.poll-interval-ms=2000 \
+    --openqa.workspace="${SCRIPT_DIR}" \
+    --openqa.cucumber-json-path="target/cucumber.json" \
+    --openqa.poll-interval-ms=2000 \
     --server.port=9191 &
 DASHBOARD_PID=$!
 sleep 6  # wait for startup

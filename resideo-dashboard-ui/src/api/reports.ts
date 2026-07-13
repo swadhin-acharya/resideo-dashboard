@@ -29,4 +29,4 @@ export const getLogDownloadUrl = (id: string) =>
   `${api.defaults.baseURL}/executions/${id}/logs/download`;
 
 export const emailReport = (id: string, to: string, from?: string) =>
-  api.post<{ message: string }>(`/executions/${id}/report/email`, { to, from: from || 'noreply@resideodashboard.com' }).then(r => r.data);
+  api.post<{ message: string }>(`/executions/${id}/report/email`, { to, from: from || 'noreply@openqa.in' }).then(r => r.data);

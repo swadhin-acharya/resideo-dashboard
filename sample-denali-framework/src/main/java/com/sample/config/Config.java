@@ -51,10 +51,10 @@ public class Config {
 
     public static class App {
         public static String baseUrl() {
-            return get("app.base.url", "https://app.resideo.com");
+            return get("app.base.url", "https://app.openqa.in");
         }
         public static String username() {
-            return get("app.username", "demo@resideo.com");
+            return get("app.username", "demo@openqa.in");
         }
         public static String password() {
             return get("app.password", "demo1234");
@@ -93,13 +93,13 @@ public class Config {
 
     public static class Dashboard {
         public static String url() {
-            return get("RESIDEO_DASHBOARD_URL", get("resideo.dashboard.url", "http://localhost:8080"));
+            return get("OPENQA_DASHBOARD_URL", get("openqa.dashboard.url", "http://localhost:8080"));
         }
         public static String apiToken() {
-            return get("RESIDEO_API_TOKEN", get("resideo.api.token", null));
+            return get("OPENQA_API_TOKEN", get("openqa.api.token", null));
         }
         public static String projectId() {
-            return get("RESIDEO_PROJECT_ID", get("resideo.project.id", null));
+            return get("OPENQA_PROJECT_ID", get("openqa.project.id", null));
         }
     }
 }

@@ -3,10 +3,10 @@ server:
 
 spring:
   application:
-    name: resideo-dashboard
+    name: openqa-dashboard
 
   datasource:
-    url: ${JDBC_DATABASE_URL:jdbc:h2:file:./data/resideo-dashboard;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE}
+    url: ${JDBC_DATABASE_URL:jdbc:h2:file:./data/openqa-dashboard;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE}
     driver-class-name: ${JDBC_DRIVER:org.h2.Driver}
     username: ${JDBC_DATABASE_USERNAME:sa}
     password: ${JDBC_DATABASE_PASSWORD:}
@@ -67,5 +67,5 @@ resideo:
 
 logging:
   level:
-    com.resideo: ${LOG_LEVEL:INFO}
+    com.openqa: ${LOG_LEVEL:INFO}
     org.flywaydb: INFO

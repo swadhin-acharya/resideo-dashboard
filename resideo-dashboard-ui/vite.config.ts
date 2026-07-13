@@ -15,7 +15,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: process.env.VERCEL_ENV ? 'dist' : '../resideo-dashboard-core/src/main/resources/static',
+    outDir: process.env.VERCEL_ENV ? 'dist' : '../openqa-dashboard-core/src/main/resources/static',
     emptyOutDir: true,
   },
 });

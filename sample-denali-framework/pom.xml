@@ -59,8 +59,8 @@
 
         <!-- Resideo Dashboard Client -->
         <dependency>
-            <groupId>com.resideo</groupId>
-            <artifactId>resideo-dashboard-client</artifactId>
+            <groupId>com.openqa</groupId>
+            <artifactId>openqa-dashboard-client</artifactId>
             <version>${dashboard.version}</version>
             <scope>test</scope>
         </dependency>
@@ -100,9 +100,9 @@
                         <include>**/TestRunner.java</include>
                     </includes>
                     <systemPropertyVariables>
-                        <resideo.execution.id>${execution.id}</resideo.execution.id>
-                        <resideo.api.token>rd_53c4dcca093617ff1c60076038337c81dacafca4bd0a48685e2dfe4205cf373a</resideo.api.token>
-                        <resideo.project.id>94bc4af8-6139-49f0-9bc4-6dad1ad77971</resideo.project.id>
+                        <openqa.execution.id>${execution.id}</openqa.execution.id>
+                        <openqa.api.token>rd_53c4dcca093617ff1c60076038337c81dacafca4bd0a48685e2dfe4205cf373a</openqa.api.token>
+                        <openqa.project.id>94bc4af8-6139-49f0-9bc4-6dad1ad77971</openqa.project.id>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

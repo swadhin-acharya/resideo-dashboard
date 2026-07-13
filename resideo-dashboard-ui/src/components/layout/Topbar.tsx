@@ -39,7 +39,7 @@ export default function Topbar({ open, onToggle }: TopbarProps) {
         </IconButton>
 
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mr: 1 }}>
-          <img src="/assets/resideo-logo.png" alt="Resideo" height={36} />
+          <img src="/assets/openqa-logo.png" alt="OpenQA" height={36} />
           <Typography variant="h6" fontWeight={700} color="text.primary" sx={{ fontSize: '1.05rem', letterSpacing: '-0.3px' }}>
             Test Dashboard
           </Typography>

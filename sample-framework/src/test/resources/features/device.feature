@@ -3,8 +3,8 @@ Feature: Device Management
   Validate device registration and communication
 
   @DC-101 @smoke
-  Scenario: Pair new thermostat to Resideo account
-    Given the user has a Resideo account with admin privileges
+  Scenario: Pair new thermostat to OpenQA account
+    Given the user has a OpenQA account with admin privileges
     When the user initiates thermostat pairing via the app
     And the thermostat enter pairing mode within 60 seconds
     Then the device appears in the user's device list

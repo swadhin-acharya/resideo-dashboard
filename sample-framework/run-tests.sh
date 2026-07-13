@@ -57,8 +57,8 @@ run_tests() {
 
     mvn clean test \
         -Dexecution.id="${GENERATED_ID}" \
-        -Dresideo.execution.id="${GENERATED_ID}" \
-        -Dresideo.dashboard.url="${DASHBOARD_URL:-http://localhost:8080}" \
+        -Dopenqa.execution.id="${GENERATED_ID}" \
+        -Dopenqa.dashboard.url="${DASHBOARD_URL:-http://localhost:8080}" \
         2>&1
 
     echo ""
@@ -77,9 +77,9 @@ start_dashboard() {
     echo "Starting Resideo Dashboard on http://localhost:8080 ..."
     cd "${SCRIPT_DIR}"
     $JAVA_CMD -jar "${DASHBOARD_JAR}" \
-        --resideo.workspace="${WORKSPACE}" \
-        --resideo.cucumber-json-path="target/cucumber.json" \
-        --resideo.poll-interval-ms=3000 &
+        --openqa.workspace="${WORKSPACE}" \
+        --openqa.cucumber-json-path="target/cucumber.json" \
+        --openqa.poll-interval-ms=3000 &
     DASHBOARD_PID=$!
     echo "Dashboard PID: ${DASHBOARD_PID}"
     echo "Open http://localhost:8080 in your browser"

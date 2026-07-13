@@ -4,14 +4,14 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.resideo</groupId>
-        <artifactId>resideo-dashboard</artifactId>
+        <groupId>com.openqa</groupId>
+        <artifactId>openqa-dashboard</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>resideo-dashboard-client</artifactId>
+    <artifactId>openqa-dashboard-client</artifactId>
     <packaging>jar</packaging>
-    <name>Resideo Dashboard Client</name>
+    <name>OpenQA Dashboard Client</name>
     <description>Lightweight Java client library for frameworks to publish execution events to the Resideo Dashboard</description>
 
     <dependencies>

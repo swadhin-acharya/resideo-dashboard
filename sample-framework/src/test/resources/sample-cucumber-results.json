@@ -18,7 +18,7 @@
           {
             "result": {"duration": 1250000000, "status": "passed"},
             "line": 7,
-            "name": "the user is logged into the Resideo app",
+            "name": "the user is logged into the OpenQA app",
             "keyword": "Given "
           },
           {
@@ -264,7 +264,7 @@
       {
         "start_timestamp": "2026-07-08T14:32:00.000Z",
         "line": 5,
-        "name": "Pair new thermostat to Resideo account",
+        "name": "Pair new thermostat to OpenQA account",
         "description": "",
         "id": "device-management;pair-new-thermostat-to-resideo-account",
         "type": "scenario",
@@ -277,7 +277,7 @@
           {
             "result": {"duration": 500000000, "status": "passed"},
             "line": 7,
-            "name": "the user has a Resideo account with admin privileges",
+            "name": "the user has a OpenQA account with admin privileges",
             "keyword": "Given "
           },
           {

@@ -4,7 +4,7 @@ Feature: Thermostat Temperature Control
 
   @TCC-101 @smoke
   Scenario: Set target temperature on connected thermostat
-    Given the user is logged into the Resideo app
+    Given the user is logged into the OpenQA app
     And a thermostat "Living Room" is connected via MQTT
     When the user sets the target temperature to 72°F
     Then the thermostat confirms the new setpoint is 72°F
