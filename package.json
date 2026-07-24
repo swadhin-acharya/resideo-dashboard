@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "process-results": "tsc -p processor/tsconfig.json && node processor/dist/cli.js",
+    "process-results": "tsc -p processor/tsconfig.json && node processor/dist/src/cli.js",
     "test:processor": "tsc -p processor/tsconfig.json && node --test processor/dist/test/*.test.js"
   },
   "dependencies": {
