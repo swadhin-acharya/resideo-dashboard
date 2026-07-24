@@ -1,0 +1,46 @@
+[
+  {
+    "featureId": "cart",
+    "name": "Cart",
+    "passRate": 66.67,
+    "total": 3,
+    "passed": 2,
+    "failed": 0,
+    "broken": 0,
+    "skipped": 1,
+    "unknown": 0
+  },
+  {
+    "featureId": "checkout",
+    "name": "Checkout",
+    "passRate": 75,
+    "total": 4,
+    "passed": 3,
+    "failed": 1,
+    "broken": 0,
+    "skipped": 0,
+    "unknown": 0
+  },
+  {
+    "featureId": "inventory",
+    "name": "Inventory",
+    "passRate": 75,
+    "total": 4,
+    "passed": 3,
+    "failed": 0,
+    "broken": 1,
+    "skipped": 0,
+    "unknown": 0
+  },
+  {
+    "featureId": "login",
+    "name": "Login",
+    "passRate": 75,
+    "total": 4,
+    "passed": 3,
+    "failed": 1,
+    "broken": 0,
+    "skipped": 0,
+    "unknown": 0
+  }
+]

@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-07-24T16:15:00Z",
+  "latestExecutionId": "225",
+  "current": {
+    "executionId": "225",
+    "executionName": "Execution #225",
+    "status": "passed",
+    "startTime": "2026-07-24T08:00:00Z",
+    "endTime": "2026-07-24T10:34:00Z",
+    "duration": 9240000,
+    "total": 1248,
+    "passed": 1164,
+    "failed": 45,
+    "broken": 11,
+    "skipped": 28,
+    "unknown": 0,
+    "passRate": 93.27,
+    "environment": {
+      "os": "Windows 11",
+      "java": "17.0.10",
+      "platform": "Android",
+      "browser": "Chrome 126.0.0",
+      "framework": "Appium 2.11.0 / TestNG 7.10.2",
+      "branch": "main",
+      "build": "225",
+      "machine": "ci-runner-04"
+    },
+    "executor": {
+      "name": "GitHub Actions",
+      "type": "github",
+      "buildName": "denali-automation-nightly",
+      "buildOrder": 225,
+      "branch": "main",
+      "url": "https://github.com/resideo/denali-automation/actions/runs/225"
+    }
+  },
+  "comparison": {
+    "total": { "value": 12.5, "direction": "up", "available": true },
+    "passed": { "value": 6.9, "direction": "up", "available": true },
+    "failed": { "value": 67.8, "direction": "down", "available": true },
+    "passRate": { "value": 4.36, "direction": "up", "available": true },
+    "duration": { "value": 8.7, "direction": "up", "available": true }
+  }
+}

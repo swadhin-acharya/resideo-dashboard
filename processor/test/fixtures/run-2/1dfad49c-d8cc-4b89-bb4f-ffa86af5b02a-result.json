@@ -1,0 +1,76 @@
+{
+  "uuid": "1dfad49c-d8cc-4b89-bb4f-ffa86af5b02a",
+  "historyId": "checkout-empty-first-name",
+  "testCaseId": "checkout-empty-first-name",
+  "fullName": "com.resideo.sample.checkout.checkout-fails-with-an-empty-first-name",
+  "name": "Checkout fails with an empty first name",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784797252779,
+  "stop": 1784797257473,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Checkout"
+    },
+    {
+      "name": "suite",
+      "value": "Checkout"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Checkout fails with an empty first name\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797252779,
+      "stop": 1784797254343,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797254343,
+      "stop": 1784797255907,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797255907,
+      "stop": 1784797257471,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

@@ -1,0 +1,51 @@
+[
+  {
+    "testId": "login-invalid",
+    "name": "Invalid credentials are rejected",
+    "feature": "Login",
+    "occurrences": 3,
+    "lastSeen": "2026-07-24T09:00:00.000Z"
+  },
+  {
+    "testId": "inventory-promo-banner",
+    "name": "Promo banner is visible on the inventory page",
+    "feature": "Inventory",
+    "occurrences": 3,
+    "lastSeen": "2026-07-24T09:00:00.000Z"
+  },
+  {
+    "testId": "checkout-item-total",
+    "name": "Checkout item total matches expected price",
+    "feature": "Checkout",
+    "occurrences": 2,
+    "lastSeen": "2026-07-24T09:00:00.000Z"
+  },
+  {
+    "testId": "checkout-empty-first-name",
+    "name": "Checkout fails with an empty first name",
+    "feature": "Checkout",
+    "occurrences": 1,
+    "lastSeen": "2026-07-22T09:00:00.000Z"
+  },
+  {
+    "testId": "login-locked-out",
+    "name": "Locked out user sees an error message",
+    "feature": "Login",
+    "occurrences": 1,
+    "lastSeen": "2026-07-22T09:00:00.000Z"
+  },
+  {
+    "testId": "inventory-sort",
+    "name": "Sort products by price low to high",
+    "feature": "Inventory",
+    "occurrences": 1,
+    "lastSeen": "2026-07-23T09:00:00.000Z"
+  },
+  {
+    "testId": "cart-remove",
+    "name": "Remove item from cart",
+    "feature": "Cart",
+    "occurrences": 1,
+    "lastSeen": "2026-07-23T09:00:00.000Z"
+  }
+]

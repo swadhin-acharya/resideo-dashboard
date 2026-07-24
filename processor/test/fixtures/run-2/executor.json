@@ -1,0 +1,9 @@
+{
+  "name": "GitHub Actions",
+  "type": "github",
+  "buildName": "saucedemo-selenium-sample",
+  "buildOrder": 202,
+  "buildUrl": "https://github.com/resideo/saucedemo-selenium-sample/actions/runs/202",
+  "reportUrl": "",
+  "reportName": "ResideoNextGen Dashboard"
+}

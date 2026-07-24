@@ -1,0 +1,90 @@
+{
+  "uuid": "abf0d2a0-72b0-4ad2-a653-d098b12fb94c",
+  "historyId": "cart-badge-empty",
+  "testCaseId": "cart-badge-empty",
+  "fullName": "com.resideo.sample.cart.cart-badge-disappears-when-the-cart-is-empty",
+  "name": "Cart badge disappears when the cart is empty",
+  "status": "skipped",
+  "stage": "finished",
+  "start": 1784883650059,
+  "stop": 1784883653303,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Cart"
+    },
+    {
+      "name": "suite",
+      "value": "Cart"
+    },
+    {
+      "name": "severity",
+      "value": "minor"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Cart badge disappears when the cart is empty\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883650059,
+      "stop": 1784883651140,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883651140,
+      "stop": 1784883652221,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "skipped",
+      "stage": "finished",
+      "start": 1784883652221,
+      "stop": 1784883653302,
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "statusDetails": {
+        "known": false,
+        "muted": false,
+        "flaky": false,
+        "message": "io.cucumber.java.PendingException: Cart-clearing helper step not implemented yet",
+        "trace": "io.cucumber.java.PendingException: Cart-clearing helper step not implemented yet\n\tat com.resideo.sample.stepdefinitions.CartSteps.the_cart_clearing_workflow_is_not_yet_implemented(CartSteps.java:29)"
+      }
+    }
+  ],
+  "attachments": [],
+  "statusDetails": {
+    "known": false,
+    "muted": false,
+    "flaky": false,
+    "message": "io.cucumber.java.PendingException: Cart-clearing helper step not implemented yet",
+    "trace": "io.cucumber.java.PendingException: Cart-clearing helper step not implemented yet\n\tat com.resideo.sample.stepdefinitions.CartSteps.the_cart_clearing_workflow_is_not_yet_implemented(CartSteps.java:29)"
+  }
+}

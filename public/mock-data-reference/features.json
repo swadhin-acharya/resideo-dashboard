@@ -1,0 +1,10 @@
+[
+  { "featureId": "system-mode", "name": "System Mode", "total": 16, "passed": 16, "failed": 0, "broken": 0, "skipped": 0, "unknown": 0, "passRate": 100 },
+  { "featureId": "alerts-notifications", "name": "Alerts & Notifications", "total": 57, "passed": 53, "failed": 3, "broken": 1, "skipped": 0, "unknown": 0, "passRate": 93 },
+  { "featureId": "humidification", "name": "Humidification", "total": 8, "passed": 4, "failed": 3, "broken": 1, "skipped": 0, "unknown": 0, "passRate": 50 },
+  { "featureId": "scheduling", "name": "Scheduling", "total": 42, "passed": 39, "failed": 2, "broken": 0, "skipped": 1, "unknown": 0, "passRate": 92.9 },
+  { "featureId": "wifi-connectivity", "name": "Wi-Fi Connectivity", "total": 64, "passed": 58, "failed": 4, "broken": 1, "skipped": 1, "unknown": 0, "passRate": 90.6 },
+  { "featureId": "away-mode", "name": "Away Mode", "total": 22, "passed": 22, "failed": 0, "broken": 0, "skipped": 0, "unknown": 0, "passRate": 100 },
+  { "featureId": "firmware-update", "name": "Firmware Update", "total": 18, "passed": 15, "failed": 2, "broken": 1, "skipped": 0, "unknown": 0, "passRate": 83.3 },
+  { "featureId": "sensors-diagnostics", "name": "Sensors & Diagnostics", "total": 31, "passed": 29, "failed": 1, "broken": 0, "skipped": 1, "unknown": 0, "passRate": 93.5 }
+]

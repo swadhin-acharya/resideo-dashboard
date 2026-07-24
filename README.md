@@ -1,544 +1,271 @@
-# OpenQA Dashboard
+# ResideoNextGen Dashboard
 
-Real-time test execution dashboard for Cucumber automation frameworks. Streams live execution results, displays pass/fail metrics, hosts historical reports, and supports distributed execution agents.
+A standalone, static automation analytics dashboard powered by Allure result
+data. Built with React, TypeScript, Vite, Material UI, and Recharts —
+deployable to GitHub Pages with no backend.
 
-## Features
+Allure is the single source of truth. This project never invents or
+independently recalculates totals, pass rates, or health scores — it reads
+Allure's structured result files, normalizes them into one canonical model,
+and the UI only visualizes that model.
 
-- **Execution Management** — Create, view, and monitor test executions with real-time WebSocket updates
-- **Cucumber Report Parsing** — Automatically parse `cucumber.json` into features, scenarios, and steps
-- **Distributed Agents** — Agents poll the server, run `mvn test` locally, and push results back
-- **Project Scoping** — Multi-project support with project-specific API tokens
-- **Role-Based Access** — RBAC with platform admin, project admin, engineer, and viewer roles
-- **Report Center** — Generate and download HTML OpenReporter-style reports
-- **Analytics Dashboard** — Pass/fail trends, duration charts, platform breakdowns
-- **WebSocket Live Updates** — Real-time execution progress streaming to the UI
+## What is ResideoNextGen Dashboard?
+
+Think of the pipeline as:
+
+```
+Automation Framework → Allure Adapter → allure-results/
+    → ResideoNextGen Processor → Static Dashboard JSON
+    → ResideoNextGen React Dashboard → GitHub Actions → GitHub Pages
+```
+
+The user only ever sees "ResideoNextGen Dashboard" — Allure is the
+underlying engine, never exposed, never iframed, never re-skinned.
+
+## Status
+
+All five milestones from the project brief are implemented:
+
+1. **UI (mock data)** — Overview page, dark/light theme, app shell.
+2. **Allure processor** — `processor/` reads `allure-results/`, produces
+   canonical JSON, unit-tested against a controlled fixture.
+3. **Real data wired in** — `public/data/*.json` currently holds processor
+   output from the [Sauce Demo Selenium sample](../saucedemo-selenium-sample),
+   not mock data. See "Sample data" below.
+4. **History preservation** — the processor merges each execution into
+   persisted history, trimmed to a configurable `historyLimit`.
+5. **GitHub Actions + Pages** — `.github/workflows/deploy.yml` and a
+   reusable `action.yml` (see "GitHub Actions integration").
+
+The other nav sections (Executions, Features, Tests, Failure Analysis,
+Retries, Trends, History, Reports, Environment) are intentionally disabled
+("Coming soon") — only Overview is built out today.
+
+A sixth piece, **`java-reporter/`**, is a separate, optional Java/Maven
+integration: any TestNG or Cucumber project that already has an Allure
+adapter can add it as a dependency to process results and view this same
+dashboard locally with no Node/npm involved — see
+[`java-reporter/README.md`](java-reporter/README.md).
 
 ## Architecture
 
-```
-┌─────────────────────────┐       ┌───────────────────────┐
-│  Agent (Local Machine)  │       │  Agent (Local Machine)│
-│  • Polls for PENDING    │       │  • Polls for PENDING  │
-│  • Runs mvn test        │       │  • Runs mvn test      │
-│  • Pushes results via   │       │  • Pushes results via │
-│    REST API             │       │    REST API           │
-└──────────┬──────────────┘       └──────────┬────────────┘
-           │  HTTP POST (features,           │
-           │  scenarios, steps, logs)        │
-           ▼                                 ▼
-┌──────────────────────────────────────────────────────┐
-│               Cloud Backend (Spring Boot)             │
-│  • REST API — /api/v1/executions, /features, /auth   │
-│  • WebSocket — /ws (live execution events)           │
-│  • Auth — token-based (Bearer oq_...)                │
-│  • Reports — OpenReporter HTML generation            │
-└────────────────────┬─────────────────────────────────┘
-                     │
-          ┌──────────▼──────────┐
-          │  Database           │
-          │  (H2 / PostgreSQL)  │
-          └─────────────────────┘
+- **Frontend**: React + TypeScript + Vite + Material UI + Recharts +
+  React Router (`HashRouter` — see "GitHub Pages routing" below).
+- **Processor**: plain Node/TypeScript under `processor/`, compiled with
+  `tsc` and run directly with `node` (no bundler, no extra runtime
+  dependencies beyond what's already in this repo).
+- **Canonical model**: `src/types/models.ts` (frontend) and
+  `processor/src/models.ts` (processor) describe the same shapes — see the
+  note at the top of the latter for why they're two files, not one.
+- **No backend**: everything the browser needs is a static JSON file under
+  `public/data/`.
 
-┌──────────────────────────────────────────────────────┐
-│              Frontend (React + MUI)                   │
-│  • Hosted on Vercel                                   │
-│  • Real-time dashboards, reports, analytics           │
-│  • Project management & API token creation            │
-└──────────────────────────────────────────────────────┘
-```
-
-## Quick Start (Local Development)
-
-### Prerequisites
-
-- Java 21+
-- Node.js 18+
-- Maven 3.9+
-
-### Run Backend
+## Local development
 
 ```bash
-mvn package -DskipTests
-java -jar openqa-dashboard-standalone/target/*.jar --server.port=8080
-```
-
-The H2 database file is created at `./data/openqa-dashboard`.  
-Default credentials: `admin` / `admin` (created by `DataSampleSeeder`).
-
-### Run Frontend (Dev Mode)
-
-```bash
-cd openqa-dashboard-ui
 npm install
 npm run dev
 ```
 
-Opens at `http://localhost:5173` with API proxy to `http://localhost:8080`.
+Open the printed local URL (typically `http://localhost:5173`).
 
-### Run Agent (Local)
+## Allure integration
 
-The agent is embedded in the Spring Boot JAR. Start a separate instance with agent mode enabled:
-
-```bash
-java -jar openqa-dashboard-standalone/target/*.jar \
-  --server.port=8081 \
-  --openqa.agent.enabled=true \
-  --openqa.agent.api-url=http://localhost:8080 \
-  --openqa.agent.api-token=oq_<your-api-token> \
-  --openqa.agent.workspace-path=/path/to/your/cucumber-project
-```
-
-The agent polls the server every 5s for `PENDING` executions, runs `mvn test`, and pushes cucumber results.
-
-### Run Cucumber Plugin
-
-The plugin works with any Cucumber-based Java framework. Add the dependency to your project's `pom.xml`:
-
-```xml
-<dependency>
-    <groupId>com.openqa</groupId>
-    <artifactId>openqa-dashboard-client</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-
-Configure via `cucumber.properties`:
-
-```properties
-cucumber.plugin=com.openqa.dashboard.client.cucumber.DashboardCucumberPlugin
-openqa.dashboard.url=http://localhost:8080
-openqa.api.token=oq_<your-api-token>
-```
-
-Or via system properties / env vars:
+### Running the processor
 
 ```bash
-mvn test \
-  -Dopenqa.dashboard.url=http://localhost:8080 \
-  -Dopenqa.api.token=oq_<token>
-
-# Or env vars:
-OPENQA_DASHBOARD_URL=http://localhost:8080 \
-OPENQA_API_TOKEN=oq_<token> \
-  mvn test
+npm run process-results -- \
+  --allure-results /path/to/allure-results \
+  --out public/data \
+  --execution-id 226 \
+  --history-limit 50
 ```
 
----
+- `--allure-results` (required): a directory containing `*-result.json`,
+  `environment.properties`, `executor.json`, `categories.json` — the
+  standard output of any Allure adapter (TestNG, JUnit, Cucumber, etc).
+- `--execution-id`: defaults to the Allure executor's `buildOrder`, then a
+  timestamp, if omitted.
+- `--out`: defaults to `public/data`.
+- `--history-limit`: defaults to 50 (see "Historical data" below).
 
-## Projects & API Keys
+Re-running the processor for an `--execution-id` that's already in history
+**replaces** that entry rather than duplicating it or double-counting its
+failures — reprocessing the same CI run twice is always safe.
 
-Each execution is scoped to a project. Create projects and API tokens from the dashboard UI (**Settings → Projects** and **Settings → API Tokens**) or via the API.
+### What the processor reads
 
-### Creating a Project
-
-```bash
-curl -X POST https://dashboard.openqa.in/api/v1/projects \
-  -H "Authorization: Bearer <session-token>" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"My Project","slug":"my-project","description":"..."}'
-```
-
-Response includes the **project ID** (`id`) — save this for configuration.
-
-### Creating an API Token
-
-```bash
-curl -X POST https://dashboard.openqa.in/api/v1/auth/tokens \
-  -H "Authorization: Bearer <session-token>" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"ci-token","projectId":"<project-uuid>","expiresInDays":90}'
-```
-
-Response includes `fullToken` (e.g., `oq_a1b2c3d4...`) — **save this value** (it is shown only once).
-
-### Configuring a Project for Test Runs
-
-```properties
-cucumber.plugin=com.openqa.dashboard.client.cucumber.DashboardCucumberPlugin
-openqa.dashboard.url=https://dashboard.openqa.in
-openqa.api.token=oq_<your-api-token>
-openqa.project.id=<your-project-uuid>
-```
-
----
-
-## Agent Architecture
-
-The agent runs as a separate Spring Boot instance (or multiple instances) and bridges local Maven test execution to the cloud dashboard.
-
-### Lifecycle
-
-1. **User** creates an execution via the UI or API — status is set to `PENDING` with a `mavenCommand` field
-2. **Agent** polls `GET /api/v1/executions/agent/pending` (scoped to its API token's user)
-3. **Agent** picks up the execution, patches status to `RUNNING`, runs `mvn test` in the configured workspace
-4. **Agent** reads `target/cucumber.json`, parses features/scenarios/steps, and POSTs them to the server
-5. **Agent** patches execution status to `PASSED` or `FAILED`
-
-### Configuration
-
-| Property | Default | Description |
-|---|---|---|
-| `openqa.agent.enabled` | `false` | Enable agent mode |
-| `openqa.agent.api-url` | — | Server API base URL |
-| `openqa.agent.api-token` | — | API token for auth |
-| `openqa.agent.workspace-path` | — | Path to the Cucumber project |
-| `openqa.agent.poll-interval-ms` | `5000` | Poll interval for pending executions |
-
----
-
-## Environment Variables Reference
-
-### Backend
-
-| Variable | Default | Description |
-|---|---|---|
-| `PORT` | `8080` | Server port |
-| `JDBC_DATABASE_URL` | `jdbc:h2:file:./data/...` | Database connection URL |
-| `JDBC_DRIVER` | `org.h2.Driver` | JDBC driver class |
-| `JDBC_DATABASE_USERNAME` | `sa` | Database user |
-| `JDBC_DATABASE_PASSWORD` | *(empty)* | Database password |
-| `DB_MODE` | `FILE` | `FILE` (H2) or `POSTGRES` |
-| `AUTH_ENABLED` | `true` | Enable authentication |
-| `FRONTEND_URL` | `http://localhost:5173` | CORS allowed origin |
-| `CUCUMBER_JSON_PATH` | `target/cucumber.json` | Cucumber report path |
-| `REPORT_PATH` | `target/open-reporter/report.html` | HTML report path |
-| `STORAGE_TYPE` | `local` | `local` or `supabase` |
-| `SUPABASE_URL` | *(empty)* | Supabase project URL |
-| `SUPABASE_SERVICE_KEY` | *(empty)* | Supabase service role key |
-| `SUPABASE_BUCKET` | `reports` | Supabase storage bucket |
-| `LOG_LEVEL` | `INFO` | Logging level |
-| `openqa.agent.enabled` | `false` | Enable agent mode |
-| `openqa.seed-sample-data` | `false` | Seed sample data on startup |
-
-### Frontend
-
-| Variable | Default | Description |
-|---|---|---|
-| `VITE_API_BASE_URL` | `/api/v1` | Backend API URL |
-| `VITE_WS_URL` | *(none)* | WebSocket URL for live updates |
-
----
-
-## Cloud Deployment
-
-### 1. Database — Supabase PostgreSQL
-
-1. Create a [Supabase](https://supabase.com) account and project.
-2. Go to **Project Settings → Database → Connection string**.
-3. Copy the PostgreSQL connection URI.
-
-### 2. Backend — Render
-
-1. Fork/clone this repo to GitHub.
-2. On [Render](https://render.com), create a **New Web Service** → connect your repo.
-3. Use **Docker** runtime.
-4. Add these **Environment Variables**:
-
-| Variable | Value |
+| File | Used for |
 |---|---|
-| `PORT` | `8080` |
-| `JDBC_DATABASE_URL` | `jdbc:postgresql://<host>:6543/postgres?sslmode=require` |
-| `JDBC_DATABASE_USERNAME` | (from Supabase) |
-| `JDBC_DATABASE_PASSWORD` | (from Supabase) |
-| `JDBC_DRIVER` | `org.postgresql.Driver` |
-| `DB_MODE` | `POSTGRES` |
-| `AUTH_ENABLED` | `true` |
-| `FRONTEND_URL` | `https://dashboard.openqa.in` |
+| `*-result.json` | test name, status, timing, steps, labels (feature/severity/tag), historyId |
+| `environment.properties` | OS, Java, platform, browser, framework, branch, build, machine |
+| `executor.json` | executor name/type, build name/order/URL |
+| `categories.json` | custom failure categorization rules (regex against status + trace) — falls back to grouping by exception class name if absent |
 
-### 3. Frontend — Vercel
+### What it produces
 
-1. Deploy the `openqa-dashboard-ui` directory to Vercel.
-2. Add **Environment Variables**:
+`public/data/summary.json`, `executions.json`, `trends.json`,
+`features.json`, `tests.json`, `failures.json`, `categories.json`,
+`environment.json`, plus an internal `.failures-contributions.json` (not
+fetched by the dashboard — bookkeeping so reprocessing stays idempotent).
 
-| Variable | Value |
-|---|---|
-| `VITE_API_BASE_URL` | `https://<your-backend>.onrender.com/api/v1` |
-| `VITE_WS_URL` | `wss://<your-backend>.onrender.com/ws` |
-
-3. Add your custom domain `dashboard.openqa.in` in **Vercel → Project → Settings → Domains**.
-
----
-
-## Integration Guide
-
-Integrate OpenQA Dashboard with any test framework — from zero-code to full custom.
-
-### Method 1: Cucumber Plugin (Real-Time Streaming)
-
-Works with any Cucumber-based Java framework. Streams results live as tests run.
-
-**Add dependency:**
-```xml
-<dependency>
-    <groupId>com.openqa</groupId>
-    <artifactId>openqa-dashboard-client</artifactId>
-    <version>1.0.0</version>
-</dependency>
-```
-
-**Configure (`cucumber.properties`):**
-```properties
-cucumber.plugin=com.openqa.dashboard.client.cucumber.DashboardCucumberPlugin
-openqa.dashboard.url=https://dashboard.openqa.in
-openqa.api.token=oq_<your-token>
-openqa.project.id=<project-uuid>
-```
-
-**Or via env vars:**
-```bash
-OPENQA_DASHBOARD_URL=https://dashboard.openqa.in \
-OPENQA_API_TOKEN=oq_<token> \
-OPENQA_PROJECT_ID=<project-uuid> \
-  mvn test
-```
-
-**How it works:** The plugin hooks into Cucumber lifecycle events (`TestRunStarted`, `TestCaseStarted`, `TestStepFinished`, `TestCaseFinished`, `TestRunFinished`) and pushes features, scenarios, steps, and logs to the server in real-time via REST API. Supports auto-creation of executions or linking to a pre-created one.
-
----
-
-### Method 2: ExecutionAgent (Zero Code, Any Maven Project)
-
-The agent polls the server, runs `mvn test`, parses `cucumber.json`, and pushes results. No code changes needed in your project.
+### Testing the processor
 
 ```bash
-java -jar openqa-dashboard-standalone.jar \
-  --server.port=8081 \
-  --openqa.agent.enabled=true \
-  --openqa.agent.api-url=https://dashboard.openqa.in \
-  --openqa.agent.api-token=oq_<token> \
-  --openqa.agent.workspace-path=/path/to/your/project
+npm run test:processor
 ```
 
-**Lifecycle:**
-1. User creates an execution with a `mavenCommand` via UI/API (status: `PENDING`)
-2. Agent polls `GET /api/v1/executions/agent/pending` every 5s
-3. Agent picks up the execution, sets status to `RUNNING`, runs `mvn test`
-4. Agent reads `target/cucumber.json`, parses features/scenarios/steps, pushes via REST
-5. Agent sets final status to `PASSED` or `FAILED`
+Runs against the controlled fixtures in `processor/test/fixtures/run-1`,
+`run-2`, `run-3` (three real, hand-designed Allure result sets with a
+deliberate passed/failed/broken/skipped mix — see the sample project below).
+Assertions check exact totals (Milestone 2's acceptance-test style) and the
+full history-merge lifecycle (Milestone 4): accumulation across three
+executions, `historyLimit` trimming, and idempotent reprocessing.
 
-| Property | Default | Description |
-|---|---|---|
-| `openqa.agent.enabled` | `false` | Enable agent mode |
-| `openqa.agent.api-url` | — | Server API base URL |
-| `openqa.agent.api-token` | — | API token for auth |
-| `openqa.agent.workspace-path` | — | Path to the Cucumber project |
-| `openqa.agent.poll-interval-ms` | `5000` | Poll interval |
+## Sample data
 
----
+`public/data/*.json` is currently populated from
+[`saucedemo-selenium-sample`](../saucedemo-selenium-sample), a small
+Selenium + Cucumber + TestNG project that exists purely to generate real
+Allure output to validate this processor against — not a real Resideo
+product suite. See that project's README for what it tests and why its
+results are a deliberate mix rather than all green.
 
-### Method 3: Direct REST API (Any Language, Any Framework)
+The original polished mock data from Milestone 1 (1,248 tests, 93.27% pass
+rate) is preserved in `mock-data-reference/` for comparison — it's outside
+`public/`, so it's never bundled into a production build.
 
-Push results from any language — Python, JS, shell scripts, C#, etc.
+## Configuration
 
-**Recommended push sequence:**
-```bash
-# 1. Create execution
-curl -X POST https://dashboard.openqa.in/api/v1/executions \
-  -H "Authorization: Bearer oq_<token>" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"My Test Run","source":"CUSTOM"}'
+`public/config.json`:
 
-# Save the returned execution ID
-
-# 2. Add a feature
-curl -X POST https://dashboard.openqa.in/api/v1/executions/{id}/features \
-  -H "Authorization: Bearer oq_<token>" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Login Feature","uri":"features/login.feature","status":"PASSED","durationMs":1500}'
-
-# Save the returned feature ID
-
-# 3. Add a scenario
-curl -X POST https://dashboard.openqa.in/api/v1/executions/{id}/scenarios \
-  -H "Authorization: Bearer oq_<token>" \
-  -H "Content-Type: application/json" \
-  -d '{"featureId":"<feature-id>","name":"Successful login","status":"PASSED","durationMs":1200}'
-
-# Save the returned scenario ID
-
-# 4. Add steps
-curl -X POST https://dashboard.openqa.in/api/v1/executions/{id}/scenarios/{sid}/steps \
-  -H "Authorization: Bearer oq_<token>" \
-  -H "Content-Type: application/json" \
-  -d '{"keyword":"Given","name":"user navigates to login page","status":"PASSED","durationMs":300}'
-
-# 5. Update scenario status (when done)
-curl -X PATCH https://dashboard.openqa.in/api/v1/scenarios/{sid}/status \
-  -H "Authorization: Bearer oq_<token>" \
-  -H "Content-Type: application/json" \
-  -d '{"status":"PASSED","durationMs":1200}'
-
-# 6. Update execution status (when all done)
-curl -X PATCH https://dashboard.openqa.in/api/v1/executions/{id}/status \
-  -H "Authorization: Bearer oq_<token>" \
-  -H "Content-Type: application/json" \
-  -d '{"status":"PASSED"}'
+```json
+{
+  "projectName": "Sauce Demo Sample Automation",
+  "dashboardTitle": "ResideoNextGen Dashboard",
+  "dashboardSubtitle": "Automation Intelligence & Reporting",
+  "historyLimit": 50,
+  "reportRetention": 20
+}
 ```
 
----
+Only `projectName` needs to change for a different automation project.
+Everything else — components, processor, routing — works unmodified.
 
-### Method 4: DashboardReporter (Java, Non-Cucumber)
+## GitHub Actions integration
 
-For JUnit, TestNG, or any Java framework. No Cucumber dependency needed.
+Two ways to use this project in CI, both under `.github/workflows/` and
+`action.yml`:
 
-**Add dependency:**
-```xml
-<dependency>
-    <groupId>com.openqa</groupId>
-    <artifactId>openqa-dashboard-client</artifactId>
-    <version>1.0.0</version>
-</dependency>
+**Direct** (`deploy.yml`, this repo's own demo): checkout, install, restore
+previous history from the `gh-pages` branch, run processor tests, process a
+sample `allure-results` fixture, build, deploy. Runnable as-is with zero
+external setup.
+
+**Reusable action** (`action.yml`, for other Resideo automation projects):
+
+```yaml
+- uses: resideo/resideo-nextgen-dashboard@main
+  with:
+    project-name: 'My Project Automation'
+    allure-results-path: allure-results
+    history-path: previous-gh-pages/data   # optional, omit on first run
+    history-limit: 50
 ```
 
-**Usage:**
-```java
-import com.openqa.dashboard.client.DashboardReporter;
+The action checks out the dashboard source itself, so a consuming project's
+repo only needs its own `allure-results/` — it never needs a copy of this
+codebase. See `action.yml` for the full input list (including optional
+OpenReporter linking and a custom `base-path`).
 
-DashboardReporter reporter = new DashboardReporter(
-    "https://dashboard.openqa.in",
-    "oq_<token>"
-);
+## GitHub Pages setup
 
-// Create execution
-ExecutionResponse exec = reporter.createExecution(
-    new CreateExecutionRequest("My Test Run", "CUSTOM"));
+1. In the repo's Settings → Pages, set the source to "GitHub Actions".
+2. Push to `main` (or run the workflow manually) — `deploy.yml` builds and
+   publishes `dist/`.
+3. The dashboard uses `HashRouter`, not browser-history routing (see below),
+   so no extra Pages configuration (like a `404.html` redirect trick) is
+   needed for deep-link refreshes to work.
 
-// Add feature
-String featureId = reporter.addFeature(exec.id(),
-    new FeatureRequest("Login Feature", "features/login.feature"));
+### GitHub Pages routing
 
-// Add scenario
-String scenarioId = reporter.addScenario(exec.id(),
-    new ScenarioRequest(featureId, "Successful login"));
+Vite's `base` is read from `VITE_BASE_PATH` (see `vite.config.ts`) so the
+build knows it's served from `https://<org>.github.io/<repo>/`, not `/`.
+Routing itself uses React Router's `HashRouter` rather than browser-history
+routing — GitHub Pages has no server-side rewrite rules, so a URL like
+`/<repo>/executions/225` would 404 on refresh under browser-history routing.
+Hash routing (`/#/executions/225`) keeps all navigation client-side and
+survives a hard refresh under any subpath.
 
-// Add steps
-reporter.addStep(scenarioId,
-    new StepRequest("Given", "user navigates to login", "PASSED", 300));
-reporter.addStep(scenarioId,
-    new StepRequest("When", "user enters credentials", "PASSED", 500));
+## Adding to a new automation project
 
-// Update scenario status
-reporter.updateScenarioStatus(scenarioId, "PASSED", 1200, null);
+1. Point your test framework's Allure adapter at `allure-results/` as usual
+   — no changes needed there.
+2. In your project's CI, add the reusable action step above with your
+   project's `project-name` and `allure-results-path`.
+3. Add a `gh-pages`-restore step (see `deploy.yml` for the exact pattern) if
+   you want trends/history to span more than one run.
+4. Enable GitHub Pages (source: GitHub Actions) in that repo's settings.
 
-// Update execution status
-reporter.updateStatus(exec.id(), "PASSED");
+No fork of this repository, no copy-pasted component code, no shared
+database — each project gets its own independent dashboard from its own
+Allure data.
+
+## Historical data
+
+- `historyLimit` (default 50, configurable via `public/config.json` and the
+  processor's `--history-limit` flag) caps how many executions' worth of
+  `executions.json` / `trends.json` are retained.
+- Top-failure occurrence counts (`failures.json`) are tracked separately
+  from that limit and are not trimmed by it — "keep lightweight historical
+  analytics longer than heavy per-run data," per the brief.
+- Re-running the processor for an execution ID already in history replaces
+  it in place; a genuinely new execution ID always accumulates.
+- There is no `public/data/history/<id>.json` per-execution snapshot
+  directory (as sketched in the original brief) — `executions.json` +
+  `trends.json` already carry everything the current UI needs, and adding
+  a second redundant storage format would be over-engineering for what's
+  actually used today. Revisit if/when the Execution Details or Retries
+  pages need raw per-execution payloads this flat model doesn't capture.
+
+## Troubleshooting
+
+**"Unable to load dashboard data" on the Overview page** — `public/data/*.json`
+is missing or malformed. Run `npm run process-results` (or restore
+`mock-data-reference/*.json` into `public/data/` for a quick sanity check)
+and reload.
+
+**Processor throws "allure-results directory not found"** — check the
+`--allure-results` path is correct and that your test run actually produced
+`*-result.json` files (an empty directory, or one containing only
+`environment.properties`, will fail this check).
+
+**A category always shows 0 tests** — categories only appear if at least one
+result actually matched their rule; this is deliberate (brief section 21:
+"Do NOT hardcode these as actual results"). Check `categories.json`'s
+`traceRegex`/`messageRegex` against your actual stack traces.
+
+**GitHub Pages shows a blank page after deploy** — almost always a `base`
+mismatch. Confirm `VITE_BASE_PATH` in the workflow matches your repo name
+exactly (`/my-repo/`, with both leading and trailing slashes).
+
+**Numbers differ between the KPI cards and a chart** — this should be
+structurally impossible (both read the same `summary.json`/`trends.json`),
+so if it happens, it's a bug in a component reading the wrong field, not a
+calculation discrepancy — every calculation happens exactly once, in the
+processor.
+
+## Project layout
+
 ```
-
-**Key methods:**
-
-| Method | API Call |
-|---|---|
-| `createExecution(req)` | `POST /api/v1/executions` |
-| `updateStatus(id, status)` | `PATCH /api/v1/executions/{id}/status` |
-| `addLog(id, level, message)` | `POST /api/v1/executions/{id}/logs` |
-| `addFeature(execId, req)` | `POST /api/v1/executions/{id}/features` |
-| `addScenario(execId, req)` | `POST /api/v1/executions/{id}/scenarios` |
-| `addStep(scenarioId, req)` | `POST /api/v1/scenarios/{id}/steps` |
-| `completeFeature(execId, featureId)` | `PATCH /api/v1/executions/{id}/features/{fid}/complete` |
-| `updateScenarioStatus(id, status, durationMs, failureReason)` | `PATCH /api/v1/scenarios/{id}/status` |
-
----
-
-### Method 5: WorkspaceWatcher (Server-Side, No Client)
-
-The dashboard watches a shared filesystem for `cucumber.json` changes and auto-ingests them. No client code needed — the server and tests must share the same filesystem.
-
-**Configuration:**
-```bash
-java -jar openqa-dashboard-standalone.jar \
-  --openqa.workspace=/path/to/cucumber-project \
-  --openqa.cucumber-json-path=target/cucumber.json
+src/                   React dashboard (see src/pages, src/components)
+processor/
+  src/                 reader.ts, normalize.ts, history.ts, writer.ts, process.ts, cli.ts
+  test/                normalize.test.ts, history.test.ts, fixtures/run-{1,2,3}/
+public/
+  config.json          per-project configuration
+  data/                canonical JSON the dashboard fetches at runtime
+mock-data-reference/    Milestone 1's original mock data (not bundled into builds)
+action.yml              reusable composite GitHub Action
+.github/workflows/      this repo's own CI/CD
 ```
-
-The watcher registers a `WatchService` on the workspace directory. When `cucumber.json` changes, it automatically parses features, scenarios, and steps into the database.
-
----
-
-### Integration Method Comparison
-
-| Method | Real-Time? | Code Changes? | External Dependencies | Language | How It Works |
-|---|---|---|---|---|---|
-| **1. Cucumber Plugin** | Yes (live) | Add plugin class to `cucumber.properties` | `openqa-dashboard-client` + Cucumber 7.x | Java (Cucumber) | HTTP from test JVM |
-| **2. ExecutionAgent** | No (post-run) | None | None (embedded in dashboard JAR) | Any (runs mvn) | Agent runs `mvn test`, parses `cucumber.json`, pushes via REST |
-| **3. REST API** | Any cadence | Write HTTP client code | HTTP client | Any language | Direct HTTP calls |
-| **4. DashboardReporter** | Yes (programmatic) | Use class in test code | `openqa-dashboard-client` (Jackson only) | Java (any framework) | HTTP via typed Java methods |
-| **5. WorkspaceWatcher** | Near-real-time | None (server-side) | Same filesystem | Any | Server watches file, auto-parses |
-
----
-
-## API Endpoints Reference
-
-| Method | Path | Description |
-|---|---|---|---|
-| `POST` | `/api/v1/auth/login` | Login (username + password) |
-| `POST` | `/api/v1/auth/register` | Register new user |
-| `GET` | `/api/v1/auth/me` | Current user info |
-| `GET` | `/api/v1/auth/tokens` | List API tokens |
-| `POST` | `/api/v1/auth/tokens` | Create API token |
-| `DELETE` | `/api/v1/auth/tokens/{id}` | Revoke token |
-| `GET` | `/api/v1/projects` | List projects |
-| `POST` | `/api/v1/projects` | Create project |
-| `GET` | `/api/v1/projects/{id}` | Get project details |
-| `GET` | `/api/v1/executions` | List executions (paginated, filterable) |
-| `POST` | `/api/v1/executions` | Create execution (PENDING) |
-| `POST` | `/api/v1/executions/trigger` | Create + trigger agent execution |
-| `GET` | `/api/v1/executions/{id}` | Execution details (with features + scenarios) |
-| `PATCH` | `/api/v1/executions/{id}/status` | Update execution status |
-| `PATCH` | `/api/v1/executions/{id}/name` | Update execution name |
-| `DELETE` | `/api/v1/executions/{id}` | Delete execution and all child records |
-| `POST` | `/api/v1/executions/{id}/cancel` | Cancel running execution (kills agent process) |
-| `GET` | `/api/v1/executions/summary` | Aggregate summary (total, passed, failed, pass rate) |
-| `GET` | `/api/v1/executions/running` | List currently running executions |
-| `GET` | `/api/v1/executions/feature-files` | List `.feature` files in workspace |
-| `GET` | `/api/v1/executions/agent/pending` | List pending executions (agent) |
-| `POST` | `/api/v1/executions/{id}/features` | Add feature to execution |
-| `PATCH` | `/api/v1/executions/{id}/features/{fid}/complete` | Mark feature as complete |
-| `POST` | `/api/v1/executions/{id}/scenarios` | Add scenario to execution |
-| `POST` | `/api/v1/executions/{id}/scenarios/{sid}/steps` | Add step to scenario |
-| `POST` | `/api/v1/executions/{id}/logs` | Append execution log |
-| `GET` | `/api/v1/executions/{id}/logs` | Get execution logs |
-| `GET` | `/api/v1/executions/{id}/report` | Get HTML report (inline) |
-| `GET` | `/api/v1/executions/{id}/report/download` | Download HTML report |
-| `POST` | `/api/v1/executions/{id}/report/email` | Email report |
-| `GET` | `/api/v1/reports` | List all reports |
-| `POST` | `/api/v1/scenarios/{sid}/steps` | Add step to scenario |
-| `PATCH` | `/api/v1/scenarios/{sid}/status` | Update scenario status |
-
----
-
-## Switching Between Local and Cloud
-
-### Local Mode
-
-```bash
-# Backend
-java -jar openqa-dashboard-standalone/target/*.jar
-
-# Frontend
-cd openqa-dashboard-ui && npm run dev
-
-# Agent
-java -jar openqa-dashboard-standalone/target/*.jar \
-  --server.port=8081 --openqa.agent.enabled=true \
-  --openqa.agent.api-url=http://localhost:8080 \
-  --openqa.agent.api-token=oq_<token> \
-  --openqa.agent.workspace-path=./sample-framework
-
-# Plugin (if not using agent)
-mvn test -Dopenqa.dashboard.url=http://localhost:8080
-```
-
-### Cloud Mode
-
-```bash
-mvn test \
-  -Dopenqa.dashboard.url=https://dashboard.openqa.in \
-  -Dopenqa.api.token=oq_<token> \
-  -Dopenqa.project.id=<project-uuid>
-```
-
----
-
-## License
-
-OpenQA — Internal use.

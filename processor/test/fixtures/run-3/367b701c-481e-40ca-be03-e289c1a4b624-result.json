@@ -1,0 +1,76 @@
+{
+  "uuid": "367b701c-481e-40ca-be03-e289c1a4b624",
+  "historyId": "cart-remove",
+  "testCaseId": "cart-remove",
+  "fullName": "com.resideo.sample.cart.remove-item-from-cart",
+  "name": "Remove item from cart",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784883644418,
+  "stop": 1784883649559,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Cart"
+    },
+    {
+      "name": "suite",
+      "value": "Cart"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Remove item from cart\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883644418,
+      "stop": 1784883646131,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883646131,
+      "stop": 1784883647844,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883647844,
+      "stop": 1784883649557,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

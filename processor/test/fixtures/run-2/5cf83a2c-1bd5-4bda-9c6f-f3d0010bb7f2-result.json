@@ -1,0 +1,76 @@
+{
+  "uuid": "5cf83a2c-1bd5-4bda-9c6f-f3d0010bb7f2",
+  "historyId": "inventory-add-to-cart",
+  "testCaseId": "inventory-add-to-cart",
+  "fullName": "com.resideo.sample.inventory.add-item-to-cart-updates-the-cart-badge",
+  "name": "Add item to cart updates the cart badge",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784797228858,
+  "stop": 1784797234073,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Inventory"
+    },
+    {
+      "name": "suite",
+      "value": "Inventory"
+    },
+    {
+      "name": "severity",
+      "value": "critical"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Add item to cart updates the cart badge\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797228858,
+      "stop": 1784797230596,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797230596,
+      "stop": 1784797232334,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797232334,
+      "stop": 1784797234072,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

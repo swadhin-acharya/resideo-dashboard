@@ -1,0 +1,76 @@
+{
+  "uuid": "37e45883-6f6b-44cd-a35c-dd66867c9ad2",
+  "historyId": "inventory-sort",
+  "testCaseId": "inventory-sort",
+  "fullName": "com.resideo.sample.inventory.sort-products-by-price-low-to-high",
+  "name": "Sort products by price low to high",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784883624178,
+  "stop": 1784883629718,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Inventory"
+    },
+    {
+      "name": "suite",
+      "value": "Inventory"
+    },
+    {
+      "name": "severity",
+      "value": "minor"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Sort products by price low to high\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883624178,
+      "stop": 1784883626024,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883626024,
+      "stop": 1784883627870,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883627870,
+      "stop": 1784883629716,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

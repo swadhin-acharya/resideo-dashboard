@@ -1,0 +1,4 @@
+[
+  { "testId": "verify-invalid-login", "name": "Verify Invalid Login", "feature": "Alerts & Notifications", "status": "failed", "duration": 5800, "total": 1, "passed": 0, "failed": 1, "broken": 0, "skipped": 0, "unknown": 0, "severity": "critical", "historyId": "h-invalid-login", "retries": 0 },
+  { "testId": "verify-system-mode", "name": "Verify System Mode", "feature": "System Mode", "status": "passed", "duration": 3200, "total": 1, "passed": 1, "failed": 0, "broken": 0, "skipped": 0, "unknown": 0, "severity": "normal", "historyId": "h-system-mode", "retries": 1 }
+]

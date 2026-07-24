@@ -1,0 +1,16 @@
+{
+  "os": "Windows 11",
+  "java": "17.0.10",
+  "platform": "Android",
+  "browser": "Chrome 126.0.0",
+  "framework": "Appium 2.11.0 / TestNG 7.10.2",
+  "branch": "main",
+  "build": "225",
+  "machine": "ci-runner-04",
+  "device": {
+    "deviceId": "R52T30-88231",
+    "brand": "Resideo",
+    "model": "T10 Pro Smart Thermostat",
+    "androidVersion": "13"
+  }
+}

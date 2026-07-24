@@ -1,0 +1,90 @@
+name: Deploy ResideoNextGen Dashboard
+
+# This is the DIRECT deployment path for this repo's own demo - it processes
+# the controlled sample fixtures under processor/test/fixtures/ so the
+# workflow is runnable with zero external setup. A real automation project
+# would instead point --allure-results at wherever its own test run wrote
+# results (an uploaded artifact, a previous job, etc) - see README.md
+# "Adding to a new project". Other projects should prefer consuming this
+# repo as a reusable action (see action.yml) rather than copying this file.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # A fresh checkout has no prior public/data/*.json history. Restoring
+      # it from the currently-published gh-pages branch is what makes trends,
+      # feature health, and flaky detection span more than one run (brief
+      # section 29). This step is expected to fail harmlessly on the very
+      # first deployment, before a gh-pages branch exists.
+      - name: Check out previously published history
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          ref: gh-pages
+          path: previous-gh-pages
+
+      - name: Restore previous history into public/data
+        run: |
+          for f in executions.json trends.json failures.json .failures-contributions.json; do
+            if [ -f "previous-gh-pages/data/$f" ]; then
+              cp "previous-gh-pages/data/$f" "public/data/$f"
+            fi
+          done
+
+      - name: Run processor unit tests
+        run: npm run test:processor
+
+      - name: Process Allure results
+        run: |
+          npm run process-results -- \
+            --allure-results processor/test/fixtures/run-3 \
+            --out public/data \
+            --history-limit 50
+
+      - name: Build dashboard
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

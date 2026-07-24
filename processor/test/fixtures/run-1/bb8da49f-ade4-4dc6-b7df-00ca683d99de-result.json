@@ -1,0 +1,76 @@
+{
+  "uuid": "bb8da49f-ade4-4dc6-b7df-00ca683d99de",
+  "historyId": "login-problem",
+  "testCaseId": "login-problem",
+  "fullName": "com.resideo.sample.login.successful-login-with-the-problem-user",
+  "name": "Successful login with the problem user",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784710803891,
+  "stop": 1784710809458,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Login"
+    },
+    {
+      "name": "suite",
+      "value": "Login"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Successful login with the problem user\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784710803891,
+      "stop": 1784710805746,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784710805746,
+      "stop": 1784710807601,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784710807601,
+      "stop": 1784710809456,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

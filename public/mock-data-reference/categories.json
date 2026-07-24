@@ -1,0 +1,7 @@
+[
+  { "name": "Assertion Failure", "count": 18, "matchedStatuses": ["failed"] },
+  { "name": "Timeout", "count": 10, "matchedStatuses": ["broken"] },
+  { "name": "Element Not Found", "count": 7, "matchedStatuses": ["broken"] },
+  { "name": "Appium Failure", "count": 5, "matchedStatuses": ["broken"] },
+  { "name": "Environment Failure", "count": 3, "matchedStatuses": ["broken", "unknown"] }
+]

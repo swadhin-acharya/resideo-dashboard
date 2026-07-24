@@ -1,0 +1,7 @@
+{
+  "projectName": "Sauce Demo Sample Automation",
+  "dashboardTitle": "ResideoNextGen Dashboard",
+  "dashboardSubtitle": "Automation Intelligence & Reporting",
+  "historyLimit": 50,
+  "reportRetention": 20
+}

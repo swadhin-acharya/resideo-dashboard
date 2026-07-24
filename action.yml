@@ -1,0 +1,135 @@
+name: 'ResideoNextGen Dashboard'
+description: >
+  Processes Allure result data into the ResideoNextGen canonical model,
+  merges it with prior execution history, builds the React dashboard, and
+  publishes the static output. Designed so any Resideo automation project
+  can adopt it with minimal configuration (project brief section 35).
+
+inputs:
+  project-name:
+    description: 'Display name shown in the sidebar (e.g. "Denali Automation").'
+    required: true
+  allure-results-path:
+    description: 'Path to the allure-results directory produced by the test run.'
+    required: true
+  history-path:
+    description: >
+      Path to a directory containing this project's previously-published
+      public/data/*.json (typically checked out from the gh-pages branch).
+      Leave empty on a project's very first run - the processor starts a
+      fresh history in that case.
+    required: false
+    default: ''
+  openreporter-path:
+    description: >
+      Optional path to a pre-generated OpenReporter HTML report to copy into
+      the published output under reports/ (see brief section 32). Purely
+      link-through; never used as a source of dashboard statistics.
+    required: false
+    default: ''
+  history-limit:
+    description: 'How many executions to retain in trends/executions history.'
+    required: false
+    default: '50'
+  base-path:
+    description: >
+      Vite base path for GitHub Pages, e.g. /my-repo/. Defaults to the
+      calling repository's name, which is correct for the common
+      "<org>.github.io/<repo>/" deployment shape.
+    required: false
+    default: ''
+  dashboard-ref:
+    description: 'Version/ref of resideo-nextgen-dashboard to check out.'
+    required: false
+    default: 'main'
+
+outputs:
+  dist-path:
+    description: 'Path to the built static site, ready to upload to GitHub Pages.'
+    value: ${{ steps.locate-dist.outputs.path }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Check out ResideoNextGen Dashboard source
+      uses: actions/checkout@v4
+      with:
+        repository: resideo/resideo-nextgen-dashboard
+        ref: ${{ inputs.dashboard-ref }}
+        path: .resideo-nextgen-dashboard
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22
+        cache: 'npm'
+        cache-dependency-path: .resideo-nextgen-dashboard/package-lock.json
+
+    - name: Install dependencies
+      shell: bash
+      working-directory: .resideo-nextgen-dashboard
+      run: npm ci
+
+    - name: Write project configuration
+      shell: bash
+      working-directory: .resideo-nextgen-dashboard
+      run: |
+        cat > public/config.json <<EOF
+        {
+          "projectName": "${{ inputs.project-name }}",
+          "dashboardTitle": "ResideoNextGen Dashboard",
+          "dashboardSubtitle": "Automation Intelligence & Reporting",
+          "historyLimit": ${{ inputs.history-limit }},
+          "reportRetention": 20
+        }
+        EOF
+
+    - name: Restore previous dashboard history
+      if: ${{ inputs.history-path != '' }}
+      shell: bash
+      working-directory: .resideo-nextgen-dashboard
+      run: |
+        for f in executions.json trends.json failures.json .failures-contributions.json; do
+          if [ -f "${{ inputs.history-path }}/$f" ]; then
+            cp "${{ inputs.history-path }}/$f" "public/data/$f"
+          fi
+        done
+
+    - name: Process Allure results
+      shell: bash
+      working-directory: .resideo-nextgen-dashboard
+      run: |
+        npm run process-results -- \
+          --allure-results "${{ github.workspace }}/${{ inputs.allure-results-path }}" \
+          --out public/data \
+          --history-limit "${{ inputs.history-limit }}"
+
+    - name: Copy OpenReporter output (optional)
+      if: ${{ inputs.openreporter-path != '' }}
+      shell: bash
+      working-directory: .resideo-nextgen-dashboard
+      run: |
+        mkdir -p public/reports
+        cp -r "${{ github.workspace }}/${{ inputs.openreporter-path }}/." public/reports/
+
+    - name: Determine base path
+      id: base-path
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.base-path }}" ]; then
+          echo "value=${{ inputs.base-path }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "value=/${{ github.event.repository.name }}/" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Build dashboard
+      shell: bash
+      working-directory: .resideo-nextgen-dashboard
+      env:
+        VITE_BASE_PATH: ${{ steps.base-path.outputs.value }}
+      run: npm run build
+
+    - name: Locate build output
+      id: locate-dist
+      shell: bash
+      run: echo "path=.resideo-nextgen-dashboard/dist" >> "$GITHUB_OUTPUT"

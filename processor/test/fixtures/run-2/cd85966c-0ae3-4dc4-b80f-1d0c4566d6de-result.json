@@ -1,0 +1,90 @@
+{
+  "uuid": "cd85966c-0ae3-4dc4-b80f-1d0c4566d6de",
+  "historyId": "cart-remove",
+  "testCaseId": "cart-remove",
+  "fullName": "com.resideo.sample.cart.remove-item-from-cart",
+  "name": "Remove item from cart",
+  "status": "broken",
+  "stage": "finished",
+  "start": 1784797241687,
+  "stop": 1784797243770,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Cart"
+    },
+    {
+      "name": "suite",
+      "value": "Cart"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Remove item from cart\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797241687,
+      "stop": 1784797242381,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797242381,
+      "stop": 1784797243075,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "broken",
+      "stage": "finished",
+      "start": 1784797243075,
+      "stop": 1784797243769,
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "statusDetails": {
+        "known": false,
+        "muted": false,
+        "flaky": false,
+        "message": "org.openqa.selenium.StaleElementReferenceException: stale element reference: element is not attached to the page document",
+        "trace": "org.openqa.selenium.StaleElementReferenceException: stale element reference\n\tat org.openqa.selenium.remote.RemoteWebElement.getText(RemoteWebElement.java:102)\n\tat com.resideo.sample.pages.InventoryPage.removeFromCart(InventoryPage.java:63)"
+      }
+    }
+  ],
+  "attachments": [],
+  "statusDetails": {
+    "known": false,
+    "muted": false,
+    "flaky": false,
+    "message": "org.openqa.selenium.StaleElementReferenceException: stale element reference: element is not attached to the page document",
+    "trace": "org.openqa.selenium.StaleElementReferenceException: stale element reference\n\tat org.openqa.selenium.remote.RemoteWebElement.getText(RemoteWebElement.java:102)\n\tat com.resideo.sample.pages.InventoryPage.removeFromCart(InventoryPage.java:63)"
+  }
+}

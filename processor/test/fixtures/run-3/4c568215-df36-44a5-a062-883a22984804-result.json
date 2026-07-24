@@ -1,0 +1,76 @@
+{
+  "uuid": "4c568215-df36-44a5-a062-883a22984804",
+  "historyId": "cart-add-multiple",
+  "testCaseId": "cart-add-multiple",
+  "fullName": "com.resideo.sample.cart.add-multiple-items-and-verify-cart-count",
+  "name": "Add multiple items and verify cart count",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784883641312,
+  "stop": 1784883643918,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Cart"
+    },
+    {
+      "name": "suite",
+      "value": "Cart"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Add multiple items and verify cart count\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883641312,
+      "stop": 1784883642180,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883642180,
+      "stop": 1784883643048,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883643048,
+      "stop": 1784883643916,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

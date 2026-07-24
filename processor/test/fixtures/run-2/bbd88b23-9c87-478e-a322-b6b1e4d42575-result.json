@@ -1,0 +1,76 @@
+{
+  "uuid": "bbd88b23-9c87-478e-a322-b6b1e4d42575",
+  "historyId": "checkout-glitch-user",
+  "testCaseId": "checkout-glitch-user",
+  "fullName": "com.resideo.sample.checkout.checkout-succeeds-for-the-performance-glitch-user",
+  "name": "Checkout succeeds for the performance glitch user",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784797260955,
+  "stop": 1784797263606,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Checkout"
+    },
+    {
+      "name": "suite",
+      "value": "Checkout"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Checkout succeeds for the performance glitch user\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797260955,
+      "stop": 1784797261838,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797261838,
+      "stop": 1784797262721,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797262721,
+      "stop": 1784797263604,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

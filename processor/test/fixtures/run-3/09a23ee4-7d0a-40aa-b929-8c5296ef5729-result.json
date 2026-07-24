@@ -1,0 +1,76 @@
+{
+  "uuid": "09a23ee4-7d0a-40aa-b929-8c5296ef5729",
+  "historyId": "checkout-valid",
+  "testCaseId": "checkout-valid",
+  "fullName": "com.resideo.sample.checkout.complete-checkout-with-valid-information",
+  "name": "Complete checkout with valid information",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784883653803,
+  "stop": 1784883657353,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Checkout"
+    },
+    {
+      "name": "suite",
+      "value": "Checkout"
+    },
+    {
+      "name": "severity",
+      "value": "blocker"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Complete checkout with valid information\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883653803,
+      "stop": 1784883654986,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883654986,
+      "stop": 1784883656169,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883656169,
+      "stop": 1784883657352,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

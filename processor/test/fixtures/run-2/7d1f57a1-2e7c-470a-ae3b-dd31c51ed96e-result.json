@@ -1,0 +1,76 @@
+{
+  "uuid": "7d1f57a1-2e7c-470a-ae3b-dd31c51ed96e",
+  "historyId": "login-locked-out",
+  "testCaseId": "login-locked-out",
+  "fullName": "com.resideo.sample.login.locked-out-user-sees-an-error-message",
+  "name": "Locked out user sees an error message",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784797211059,
+  "stop": 1784797215173,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Login"
+    },
+    {
+      "name": "suite",
+      "value": "Login"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Locked out user sees an error message\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797211059,
+      "stop": 1784797212430,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797212430,
+      "stop": 1784797213801,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797213801,
+      "stop": 1784797215172,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

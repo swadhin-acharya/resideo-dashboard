@@ -1,0 +1,94 @@
+{
+  "uuid": "17d2cf99-d76e-426f-bed4-ee065ff7f7a2",
+  "historyId": "inventory-promo-banner",
+  "testCaseId": "inventory-promo-banner",
+  "fullName": "com.resideo.sample.inventory.promo-banner-is-visible-on-the-inventory-page",
+  "name": "Promo banner is visible on the inventory page",
+  "status": "broken",
+  "stage": "finished",
+  "start": 1784797234573,
+  "stop": 1784797237138,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Inventory"
+    },
+    {
+      "name": "suite",
+      "value": "Inventory"
+    },
+    {
+      "name": "severity",
+      "value": "minor"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    },
+    {
+      "name": "tag",
+      "value": "bug"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Promo banner is visible on the inventory page\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797234573,
+      "stop": 1784797235428,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784797235428,
+      "stop": 1784797236283,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "broken",
+      "stage": "finished",
+      "start": 1784797236283,
+      "stop": 1784797237138,
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "statusDetails": {
+        "known": false,
+        "muted": false,
+        "flaky": false,
+        "message": "org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[data-test='promo-banner']\"}",
+        "trace": "org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element\n\tat org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:415)\n\tat com.resideo.sample.pages.InventoryPage.isPromoBannerVisible(InventoryPage.java:58)"
+      }
+    }
+  ],
+  "attachments": [],
+  "statusDetails": {
+    "known": false,
+    "muted": false,
+    "flaky": false,
+    "message": "org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[data-test='promo-banner']\"}",
+    "trace": "org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element\n\tat org.openqa.selenium.remote.RemoteWebDriver.findElement(RemoteWebDriver.java:415)\n\tat com.resideo.sample.pages.InventoryPage.isPromoBannerVisible(InventoryPage.java:58)"
+  }
+}

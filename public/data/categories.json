@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Assertion Failure",
+    "count": 2,
+    "matchedStatuses": [
+      "failed"
+    ]
+  },
+  {
+    "name": "Element Not Found",
+    "count": 1,
+    "matchedStatuses": [
+      "broken"
+    ]
+  }
+]

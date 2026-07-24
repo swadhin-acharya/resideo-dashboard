@@ -1,0 +1,90 @@
+{
+  "uuid": "55e4da72-a2f7-4e13-a139-946221670c6e",
+  "historyId": "checkout-empty-first-name",
+  "testCaseId": "checkout-empty-first-name",
+  "fullName": "com.resideo.sample.checkout.checkout-fails-with-an-empty-first-name",
+  "name": "Checkout fails with an empty first name",
+  "status": "broken",
+  "stage": "finished",
+  "start": 1784710854456,
+  "stop": 1784710858661,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Checkout"
+    },
+    {
+      "name": "suite",
+      "value": "Checkout"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Checkout fails with an empty first name\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784710854456,
+      "stop": 1784710855857,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784710855857,
+      "stop": 1784710857258,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "broken",
+      "stage": "finished",
+      "start": 1784710857258,
+      "stop": 1784710858659,
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "statusDetails": {
+        "known": false,
+        "muted": false,
+        "flaky": false,
+        "message": "org.openqa.selenium.StaleElementReferenceException: stale element reference: element is not attached to the page document",
+        "trace": "org.openqa.selenium.StaleElementReferenceException: stale element reference\n\tat org.openqa.selenium.remote.RemoteWebElement.getText(RemoteWebElement.java:102)\n\tat com.resideo.sample.pages.InventoryPage.removeFromCart(InventoryPage.java:63)"
+      }
+    }
+  ],
+  "attachments": [],
+  "statusDetails": {
+    "known": false,
+    "muted": false,
+    "flaky": false,
+    "message": "org.openqa.selenium.StaleElementReferenceException: stale element reference: element is not attached to the page document",
+    "trace": "org.openqa.selenium.StaleElementReferenceException: stale element reference\n\tat org.openqa.selenium.remote.RemoteWebElement.getText(RemoteWebElement.java:102)\n\tat com.resideo.sample.pages.InventoryPage.removeFromCart(InventoryPage.java:63)"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "uuid": "61c0ef70-a6eb-4416-a338-c38d2b6eef02",
+  "historyId": "inventory-count",
+  "testCaseId": "inventory-count",
+  "fullName": "com.resideo.sample.inventory.inventory-page-lists-six-products",
+  "name": "Inventory page lists six products",
+  "status": "passed",
+  "stage": "finished",
+  "start": 1784883620738,
+  "stop": 1784883623678,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Inventory"
+    },
+    {
+      "name": "suite",
+      "value": "Inventory"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Inventory page lists six products\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883620738,
+      "stop": 1784883621718,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883621718,
+      "stop": 1784883622698,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883622698,
+      "stop": 1784883623678,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    }
+  ],
+  "attachments": []
+}

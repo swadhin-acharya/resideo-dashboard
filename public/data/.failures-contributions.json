@@ -1,0 +1,28 @@
+{
+  "login-invalid": [
+    "201",
+    "202",
+    "203"
+  ],
+  "checkout-item-total": [
+    "201",
+    "203"
+  ],
+  "inventory-promo-banner": [
+    "201",
+    "202",
+    "203"
+  ],
+  "checkout-empty-first-name": [
+    "201"
+  ],
+  "login-locked-out": [
+    "201"
+  ],
+  "inventory-sort": [
+    "202"
+  ],
+  "cart-remove": [
+    "202"
+  ]
+}

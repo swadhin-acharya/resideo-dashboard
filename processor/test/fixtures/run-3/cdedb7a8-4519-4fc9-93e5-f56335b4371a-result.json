@@ -1,0 +1,94 @@
+{
+  "uuid": "cdedb7a8-4519-4fc9-93e5-f56335b4371a",
+  "historyId": "checkout-item-total",
+  "testCaseId": "checkout-item-total",
+  "fullName": "com.resideo.sample.checkout.checkout-item-total-matches-expected-price",
+  "name": "Checkout item total matches expected price",
+  "status": "failed",
+  "stage": "finished",
+  "start": 1784883663925,
+  "stop": 1784883666610,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Checkout"
+    },
+    {
+      "name": "suite",
+      "value": "Checkout"
+    },
+    {
+      "name": "severity",
+      "value": "critical"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    },
+    {
+      "name": "tag",
+      "value": "bug"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Checkout item total matches expected price\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883663925,
+      "stop": 1784883664820,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883664820,
+      "stop": 1784883665715,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "failed",
+      "stage": "finished",
+      "start": 1784883665715,
+      "stop": 1784883666610,
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "statusDetails": {
+        "known": false,
+        "muted": false,
+        "flaky": false,
+        "message": "AssertionError: expected values to be equal",
+        "trace": "java.lang.AssertionError: expected [true] but found [false]\n\tat org.testng.Assert.fail(Assert.java:96)\n\tat org.testng.Assert.failNotEquals(Assert.java:1050)\n\tat com.resideo.sample.stepdefinitions.CheckoutSteps.the_item_total_should_equal(CheckoutSteps.java:41)"
+      }
+    }
+  ],
+  "attachments": [],
+  "statusDetails": {
+    "known": false,
+    "muted": false,
+    "flaky": false,
+    "message": "AssertionError: expected values to be equal",
+    "trace": "java.lang.AssertionError: expected [true] but found [false]\n\tat org.testng.Assert.fail(Assert.java:96)\n\tat org.testng.Assert.failNotEquals(Assert.java:1050)\n\tat com.resideo.sample.stepdefinitions.CheckoutSteps.the_item_total_should_equal(CheckoutSteps.java:41)"
+  }
+}

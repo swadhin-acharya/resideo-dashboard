@@ -1,0 +1,63 @@
+{
+  "generatedAt": "2026-07-24T11:15:27.199Z",
+  "latestExecutionId": "203",
+  "current": {
+    "executionId": "203",
+    "executionName": "Execution #203",
+    "status": "failed",
+    "startTime": "2026-07-24T09:00:00.000Z",
+    "endTime": "2026-07-24T09:01:09.699Z",
+    "duration": 69699,
+    "passRate": 73.33,
+    "environment": {
+      "os": "Linux 6.8.0",
+      "java": "17.0.11",
+      "platform": "Web",
+      "browser": "Chrome (headless)",
+      "framework": "Selenium 4 / Cucumber 7 / TestNG",
+      "branch": "main",
+      "build": "203",
+      "machine": "ci-runner-04"
+    },
+    "executor": {
+      "name": "GitHub Actions",
+      "type": "github",
+      "buildName": "saucedemo-selenium-sample",
+      "buildOrder": 203,
+      "url": "https://github.com/resideo/saucedemo-selenium-sample/actions/runs/203"
+    },
+    "total": 15,
+    "passed": 11,
+    "failed": 2,
+    "broken": 1,
+    "skipped": 1,
+    "unknown": 0
+  },
+  "comparison": {
+    "total": {
+      "value": 0,
+      "direction": "flat",
+      "available": true
+    },
+    "passed": {
+      "value": 10,
+      "direction": "up",
+      "available": true
+    },
+    "failed": {
+      "value": 0,
+      "direction": "flat",
+      "available": true
+    },
+    "passRate": {
+      "value": 6.66,
+      "direction": "up",
+      "available": true
+    },
+    "duration": {
+      "value": 9.58,
+      "direction": "up",
+      "available": true
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "uuid": "45a1aba8-cecf-4050-82da-a99b99b5d980",
+  "historyId": "login-invalid",
+  "testCaseId": "login-invalid",
+  "fullName": "com.resideo.sample.login.invalid-credentials-are-rejected",
+  "name": "Invalid credentials are rejected",
+  "status": "failed",
+  "stage": "finished",
+  "start": 1784883614917,
+  "stop": 1784883620238,
+  "labels": [
+    {
+      "name": "feature",
+      "value": "Login"
+    },
+    {
+      "name": "suite",
+      "value": "Login"
+    },
+    {
+      "name": "severity",
+      "value": "normal"
+    },
+    {
+      "name": "framework",
+      "value": "cucumber"
+    },
+    {
+      "name": "language",
+      "value": "java"
+    },
+    {
+      "name": "host",
+      "value": "ci-runner-04"
+    },
+    {
+      "name": "thread",
+      "value": "main"
+    },
+    {
+      "name": "tag",
+      "value": "bug"
+    }
+  ],
+  "links": [],
+  "parameters": [],
+  "steps": [
+    {
+      "name": "Given the user is on a precondition for \"Invalid credentials are rejected\"",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883614917,
+      "stop": 1784883616690,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "When the user performs the action under test",
+      "status": "passed",
+      "stage": "finished",
+      "start": 1784883616690,
+      "stop": 1784883618463,
+      "steps": [],
+      "attachments": [],
+      "parameters": []
+    },
+    {
+      "name": "Then the expected outcome is verified",
+      "status": "failed",
+      "stage": "finished",
+      "start": 1784883618463,
+      "stop": 1784883620236,
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "statusDetails": {
+        "known": false,
+        "muted": false,
+        "flaky": false,
+        "message": "AssertionError: expected values to be equal",
+        "trace": "java.lang.AssertionError: expected [true] but found [false]\n\tat org.testng.Assert.fail(Assert.java:96)\n\tat org.testng.Assert.failNotEquals(Assert.java:1050)\n\tat com.resideo.sample.stepdefinitions.CheckoutSteps.the_item_total_should_equal(CheckoutSteps.java:41)"
+      }
+    }
+  ],
+  "attachments": [],
+  "statusDetails": {
+    "known": false,
+    "muted": false,
+    "flaky": false,
+    "message": "AssertionError: expected values to be equal",
+    "trace": "java.lang.AssertionError: expected [true] but found [false]\n\tat org.testng.Assert.fail(Assert.java:96)\n\tat org.testng.Assert.failNotEquals(Assert.java:1050)\n\tat com.resideo.sample.stepdefinitions.CheckoutSteps.the_item_total_should_equal(CheckoutSteps.java:41)"
+  }
+}

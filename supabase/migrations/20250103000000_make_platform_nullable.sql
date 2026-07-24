@@ -1,1 +1,0 @@
-ALTER TABLE executions ALTER COLUMN platform DROP NOT NULL;

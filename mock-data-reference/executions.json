@@ -1,0 +1,7 @@
+[
+  { "executionId": "225", "status": "passed", "total": 1248, "passed": 1164, "failed": 45, "broken": 11, "skipped": 28, "unknown": 0, "passRate": 93.27, "duration": 9240000, "date": "2026-07-24T10:30:00Z" },
+  { "executionId": "224", "status": "failed", "total": 1337, "passed": 1156, "failed": 140, "broken": 15, "skipped": 26, "unknown": 0, "passRate": 86.46, "duration": 8280000, "date": "2026-07-23T10:30:00Z" },
+  { "executionId": "223", "status": "passed", "total": 1337, "passed": 1298, "failed": 20, "broken": 9, "skipped": 10, "unknown": 0, "passRate": 97.08, "duration": 9660000, "date": "2026-07-22T10:30:00Z" },
+  { "executionId": "222", "status": "passed", "total": 1337, "passed": 1265, "failed": 40, "broken": 12, "skipped": 20, "unknown": 0, "passRate": 94.61, "duration": 8880000, "date": "2026-07-21T10:30:00Z" },
+  { "executionId": "221", "status": "failed", "total": 1337, "passed": 1098, "failed": 180, "broken": 24, "skipped": 35, "unknown": 0, "passRate": 82.12, "duration": 7500000, "date": "2026-07-20T10:30:00Z" }
+]

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.resideo.nextgen</groupId>
+    <artifactId>resideonextgen-reporter-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>resideonextgen-reporter-core</artifactId>
+  <packaging>jar</packaging>
+  <name>ResideoNextGen Reporter Core</name>
+  <description>
+    Canonical model, Allure-results reader, single calculation layer,
+    history merge, static dashboard JSON writer, embedded HTTP server, and
+    thin TestNG/Cucumber lifecycle hooks. Add as a test-scope dependency to
+    a project that already has an Allure adapter configured to enable
+    ResideoNextGen reporting -- no other source of test results is read.
+  </description>
+
+  <dependencies>
+    <!-- Shaded/relocated below so this jar never conflicts with a gson
+         version the consuming project (or Allure itself) already uses. -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+    </dependency>
+
+    <!-- Provided: the consuming project supplies its own TestNG/Cucumber
+         version. We only use lifecycle/plugin interfaces from these, never
+         bundle them. -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>${testng.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.cucumber</groupId>
+      <artifactId>cucumber-plugin</artifactId>
+      <version>${cucumber.version}</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>resideonextgen-reporter-core-${project.version}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>${maven-shade-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <relocations>
+                <relocation>
+                  <pattern>com.google.gson</pattern>
+                  <shadedPattern>com.resideo.nextgen.reporter.shaded.gson</shadedPattern>
+                </relocation>
+              </relocations>
+              <createDependencyReducedPom>true</createDependencyReducedPom>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,10 @@
+{
+  "os": "Linux 6.8.0",
+  "java": "17.0.11",
+  "platform": "Web",
+  "browser": "Chrome (headless)",
+  "framework": "Selenium 4 / Cucumber 7 / TestNG",
+  "branch": "main",
+  "build": "203",
+  "machine": "ci-runner-04"
+}
